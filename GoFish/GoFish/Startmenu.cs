@@ -10,13 +10,17 @@ namespace CardGameFish
     {
         public static void Start()
         {
+            Console.CursorVisible = true;
+
             string begin = "Börja spelet";
             string exit = "Avsluta spelet";
             Console.SetCursorPosition((Console.WindowWidth - begin.Length) / 2, 5);
             Console.WriteLine(begin);
             Console.SetCursorPosition((Console.WindowWidth - exit.Length) / 2, 6);
             Console.WriteLine(exit);
+
             
+
             //Console.WriteLine("Enter för att spela.");
             //Console.WriteLine("Escape för att avsluta.");
             ConsoleKeyInfo s = Console.ReadKey();
@@ -31,8 +35,6 @@ namespace CardGameFish
             {
                 System.Environment.Exit(0);
             }
-
-            Console.WriteLine("I will code good things!");
 
             Console.ReadKey();
         }
