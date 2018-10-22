@@ -16,7 +16,7 @@ namespace CardGameFish
 
     class Game
     {
-        Random deck = new Random();
+        Random shuffled = new Random();
     }
 }
 

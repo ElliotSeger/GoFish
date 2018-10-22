@@ -12,23 +12,25 @@ namespace CardGameFish
         {
             Console.CursorVisible = true;
 
-            string begin = "Börja spelet";
-            string exit = "Avsluta spelet";
+            string begin = "Enter för att börja spelet";
+            string exit = "Escape för att avsluta spelet";
             Console.SetCursorPosition((Console.WindowWidth - begin.Length) / 2, 5);
             Console.WriteLine(begin);
             Console.SetCursorPosition((Console.WindowWidth - exit.Length) / 2, 6);
             Console.WriteLine(exit);
 
-            
-
-            //Console.WriteLine("Enter för att spela.");
-            //Console.WriteLine("Escape för att avsluta.");
             ConsoleKeyInfo s = Console.ReadKey();
+
 
             if (s.Key == ConsoleKey.Enter)
             {
-                Console.WriteLine("Skriv in antal spelare från 2 till 4.");
-                string nbrOfPlayers = Console.ReadLine();
+                Console.Clear();
+                string players = "Skriv in antal spelare från 2 till 4";
+                List<int> nbrOfPlayers = new List<int>();
+                Console.SetCursorPosition((Console.WindowWidth - players.Length) / 2, 5);
+                Console.WriteLine(players);
+
+                Console.SetCursorPosition((Console.WindowWidth - players.Length) / 2, 6);
             }
 
             if (s.Key == ConsoleKey.Escape)
