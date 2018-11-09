@@ -4,19 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CardGameFish
+namespace GoFish
 {
-    enum Suit
-    {
-        Hjärter,
-        Ruter, 
-        Spader,
-        Klöver
-    }
-
     class Game
     {
-        Random deck = new Random();
+        Deck deck;
+
+        public Game()
+        {
+            Initialize();
+        }
+        public void Initialize()
+        {
+            deck = new Deck();
+        }
     }
 }
 

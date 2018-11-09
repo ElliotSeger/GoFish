@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
 
-namespace CardGameFish
+namespace GoFish
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Startmenu.Start();
+            Startmenu startmenu = Startmenu.Create();
+            startmenu.Run();
         }
     }
 }

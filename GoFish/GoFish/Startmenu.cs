@@ -4,37 +4,62 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CardGameFish
+namespace GoFish
 {
-    static class Startmenu
+    public class Startmenu
     {
-        public static void Start()
+        string tsetM;
+        public static Startmenu Create()
         {
-            string begin = "Börja spelet";
-            string exit = "Avsluta spelet";
-            Console.SetCursorPosition((Console.WindowWidth - begin.Length) / 2, 5);
-            Console.WriteLine(begin);
-            Console.SetCursorPosition((Console.WindowWidth - exit.Length) / 2, 6);
-            Console.WriteLine(exit);
             
-            //Console.WriteLine("Enter för att spela.");
-            //Console.WriteLine("Escape för att avsluta.");
-            ConsoleKeyInfo s = Console.ReadKey();
-
-            if (s.Key == ConsoleKey.Enter)
-            {
-                Console.WriteLine("Skriv in antal spelare från 2 till 4.");
-                string nbrOfPlayers = Console.ReadLine();
-            }
-
-            if (s.Key == ConsoleKey.Escape)
-            {
-                System.Environment.Exit(0);
-            }
-
-            Console.WriteLine("I will code good things!");
-
-            Console.ReadKey();
+            return new Startmenu();
         }
+
+        public void Run()
+        {
+            
+            string beginMessage = "Börja spelet";
+            string exitMessage = "Avsluta spelet";
+            int nmbrOfPlayers;
+            while (true)
+            {
+                Console.SetCursorPosition((Console.WindowWidth - beginMessage.Length) / 2, 5);
+                Console.WriteLine(beginMessage);
+                Console.SetCursorPosition((Console.WindowWidth - exitMessage.Length) / 2, 6);
+                Console.WriteLine(exitMessage);
+
+                ConsoleKeyInfo s = Console.ReadKey(true);
+
+                if (s.Key == ConsoleKey.Enter)
+                {
+                    nmbrOfPlayers = GetNmbrOfPlayers();
+                    Game game = new Game();
+
+                    game.Initialize();
+                }
+                else if (s.Key == ConsoleKey.Escape)
+                {
+                    return;
+                }
+            }
+        }
+
+        private static int GetNmbrOfPlayers()
+        {
+            int nmbrOfPlayers = 0;
+            string message = "Choose a numerical value between 2 and 4";
+            Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, 7);
+            Console.WriteLine(message);
+            Console.SetCursorPosition((Console.WindowWidth) / 2, 8);
+            while (!int.TryParse(Console.ReadLine(), out nmbrOfPlayers) && (nmbrOfPlayers < 2 || nmbrOfPlayers > 4))
+            {
+                Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, 7);
+                Console.WriteLine(message);
+                Console.SetCursorPosition((Console.WindowWidth) / 2, 8);
+
+            }
+            return nmbrOfPlayers;
+        }
+
     }
 }
