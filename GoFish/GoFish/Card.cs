@@ -31,14 +31,14 @@ namespace GoFish
 
     public class Card
     {
-        public Card(Card card)
+        public Card(Suit suit, Values value)
         {
-            this.suit = card.suit;
-            this.value = card.value;
+            this.suit = suit;
+            this.value = value;
         }
 
         public Suit suit;
-        public int value;
+        public Values value;
 
         public override string ToString()
         {
