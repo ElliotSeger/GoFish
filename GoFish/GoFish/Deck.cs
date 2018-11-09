@@ -22,7 +22,7 @@ namespace GoFish
             {
                 for (int value = 1; value < 14; value++)
                 {
-                    cards.Add(new Card { suit = (Suit)suit, value = value });
+                    cards.Add(new Card ((Suit)suit, (Values)value ));
                 }
             }
             Shuffle();
@@ -48,12 +48,12 @@ namespace GoFish
 
         public Card Pull()
         {
-            if(cards.Count == 0)
+            if (cards.Count == 0)
             {
 
                 return null;
             }
-            Card card = new Card(cards[0]);
+            Card card = cards[0];
             // se till att det alltid finns ett kort kvar i leken
             cards.RemoveAt(0);
             return card;

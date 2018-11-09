@@ -8,10 +8,8 @@ namespace GoFish
 {
     public class Startmenu
     {
-        string tsetM;
         public static Startmenu Create()
         {
-            
             return new Startmenu();
         }
 
