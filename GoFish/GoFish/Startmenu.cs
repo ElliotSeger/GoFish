@@ -8,18 +8,16 @@ namespace GoFish
 {
     public class Startmenu
     {
-        string tsetM;
         public static Startmenu Create()
         {
-            
             return new Startmenu();
         }
 
         public void Run()
         {
             
-            string beginMessage = "Börja spelet";
-            string exitMessage = "Avsluta spelet";
+            string beginMessage = "Begin game";
+            string exitMessage = "Exit game";
             int nmbrOfPlayers;
             while (true)
             {
