@@ -1,21 +1,21 @@
-﻿using System;
+﻿using PlayerLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoFish
+namespace ConsoleGame
 {
-    public class Startmenu
+    public class ConsoleStartmenu
     {
-        public static Startmenu Create()
+        public static ConsoleStartmenu Create()
         {
-            return new Startmenu();
+            return new ConsoleStartmenu();
         }
 
-        public void Run()
+        public IEnumerable<Player> Execute()
         {
-            
             string beginMessage = "Börja spelet";
             string exitMessage = "Avsluta spelet";
             int nmbrOfPlayers;
@@ -31,18 +31,16 @@ namespace GoFish
                 if (s.Key == ConsoleKey.Enter)
                 {
                     nmbrOfPlayers = GetNmbrOfPlayers();
-                    Game game = new Game();
-
-                    game.Initialize();
+                    return CreatePlayers(nmbrOfPlayers);
                 }
                 else if (s.Key == ConsoleKey.Escape)
                 {
-                    return;
+                    return null;
                 }
             }
         }
 
-        private static int GetNmbrOfPlayers()
+        private int GetNmbrOfPlayers()
         {
             int nmbrOfPlayers = 0;
             string message = "Choose a numerical value between 2 and 4";
@@ -54,10 +52,13 @@ namespace GoFish
                 Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, 7);
                 Console.WriteLine(message);
                 Console.SetCursorPosition((Console.WindowWidth) / 2, 8);
-
             }
             return nmbrOfPlayers;
         }
 
+        private IEnumerable<Player> CreatePlayers(int nmbrOfPlayers)
+        {
+            return null;
+        }
     }
 }

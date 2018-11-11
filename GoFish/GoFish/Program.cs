@@ -1,4 +1,5 @@
-﻿using System;
+﻿using ConsoleGame;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,8 +12,8 @@ namespace GoFish
     {
         static void Main(string[] args)
         {
-            Startmenu startmenu = Startmenu.Create();
-            startmenu.Run();
+            ConsoleGameController game = new ConsoleGameController();
+            game.Run();
         }
     }
 }

@@ -1,19 +1,15 @@
-﻿using System;
+﻿using CardLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GoFish
+namespace CardLibrary
 {
     public class Deck
     {
         List<Card> cards = new List<Card>();
-
-        public Deck()
-        {
-            Initialize();
-        }
 
         public void Initialize()
         {
@@ -22,12 +18,24 @@ namespace GoFish
             {
                 for (int value = 1; value < 14; value++)
                 {
-                    cards.Add(new Card ((Suit)suit, (Values)value ));
+                    cards.Add(new Card((Suits)suit, (Values)value));
                 }
             }
             Shuffle();
         }
 
+        public static Deck Create()
+        {
+            var deck = new Deck();
+            deck.Initialize();
+            return deck;
+        }
+
+
+
+        /// <summary>
+        /// Shuffles the cards at the start of the game.
+        /// </summary>
         public void Shuffle()
         {
             Random cardShuffle1 = new Random();
@@ -46,17 +54,36 @@ namespace GoFish
             }
         }
 
-        public Card Pull()
+        public Card PullOne()
         {
             if (cards.Count == 0)
             {
-
                 return null;
             }
             Card card = cards[0];
             // se till att det alltid finns ett kort kvar i leken
             cards.RemoveAt(0);
             return card;
+        }
+
+        /// <summary>
+        /// Separation Of Concern(SOC), by using SOC we have PullMany inside Deck instead of inside the Game.
+        /// </summary>
+        /// <param name="nmbrOfCards">
+        /// The number of cards to be drawn.
+        /// </param>
+        /// <returns></returns>
+        public IEnumerable<Card> PullMany(int nmbrOfCards)
+        {
+            List<Card> result = new List<Card>();
+            if (cards.Count() >= nmbrOfCards)
+            {
+                for (int i = 0; i < nmbrOfCards; i++)
+                {
+                    result.Add(PullOne());
+                }
+            }
+            return result;
         }
     }
 
