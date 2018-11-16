@@ -9,15 +9,25 @@ namespace ConsoleGame
 {
     public class ConsoleStartmenu
     {
+        /// <summary>
+        /// Creates a ConsoleStartmenu when called upon.
+        /// </summary>
+        /// <returns></returns>
         public static ConsoleStartmenu Create()
         {
             return new ConsoleStartmenu();
         }
 
-        public IEnumerable<Player> Execute()
+        /// <summary>
+        /// Begins the game and creates the players with the given input by the user.
+        /// </summary>
+        /// <returns>
+        /// Returns an IEnumerable with the players unless the user presses escape in which case it returns null.
+        /// </returns>
+        public IEnumerable<BasePlayer> Execute()
         {
-            string beginMessage = "Börja spelet";
-            string exitMessage = "Avsluta spelet";
+            string beginMessage = "Start Game";
+            string exitMessage = "Exit Game";
             int nmbrOfPlayers;
             while (true)
             {
@@ -56,7 +66,7 @@ namespace ConsoleGame
             return nmbrOfPlayers;
         }
 
-        private IEnumerable<Player> CreatePlayers(int nmbrOfPlayers)
+        private IEnumerable<BasePlayer> CreatePlayers(int nmbrOfPlayers)
         {
             return null;
         }

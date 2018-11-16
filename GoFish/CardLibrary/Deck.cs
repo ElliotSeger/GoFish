@@ -11,6 +11,9 @@ namespace CardLibrary
     {
         List<Card> cards = new List<Card>();
 
+        /// <summary>
+        /// Clears the deck and then creates a new one which is then shuffled.
+        /// </summary>
         public void Initialize()
         {
             cards.Clear();
@@ -24,6 +27,10 @@ namespace CardLibrary
             Shuffle();
         }
 
+        /// <summary>
+        /// Creates and returns a new deck
+        /// </summary>
+        /// <returns></returns>
         public static Deck Create()
         {
             var deck = new Deck();
@@ -54,6 +61,12 @@ namespace CardLibrary
             }
         }
 
+        /// <summary>
+        /// Pulls one card when called upon.
+        /// </summary>
+        /// <returns>
+        /// Returns a card unless the pile is empty.
+        /// </returns>
         public Card PullOne()
         {
             if (cards.Count == 0)
