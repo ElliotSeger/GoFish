@@ -26,16 +26,19 @@ namespace ConsoleGame
         /// </returns>
         public IEnumerable<BasePlayer> Execute()
         {
-            string beginMessage = "Start Game";
-            string exitMessage = "Exit Game";
+            Console.CursorVisible = false;
+
+            Menu.Option[] options =
+            {
+                new Menu.Option("Start", true, Menu.Start),
+                new Menu.Option("Exit", false, Menu.Exit)
+            };
+
+            Menu.GetAction(options)();
+
             int nmbrOfPlayers;
             while (true)
             {
-                Console.SetCursorPosition((Console.WindowWidth - beginMessage.Length) / 2, 5);
-                Console.WriteLine(beginMessage);
-                Console.SetCursorPosition((Console.WindowWidth - exitMessage.Length) / 2, 6);
-                Console.WriteLine(exitMessage);
-
                 ConsoleKeyInfo s = Console.ReadKey(true);
 
                 if (s.Key == ConsoleKey.Enter)
