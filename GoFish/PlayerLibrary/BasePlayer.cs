@@ -9,9 +9,13 @@ namespace PlayerLibrary
 {
     public class BasePlayer
     {
-        //CurrentDeck is set without a "set;" to avoid cheating through giving yourself cards.
-        public Deck CurrentDeck { get; }
+        public Deck CurrentDeck { get; set; }
         public List<Card> Hand { get; set; }
+
+        public BasePlayer()
+        {
+
+        }
 
         /// <summary>
         /// Sets the players deck when called upon.

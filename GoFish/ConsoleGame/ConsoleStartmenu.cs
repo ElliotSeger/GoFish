@@ -9,6 +9,8 @@ namespace ConsoleGame
 {
     public class ConsoleStartmenu
     {
+        public IEnumerable<Type> PlayerTypes { get; set; }
+
         /// <summary>
         /// Creates a ConsoleStartmenu when called upon.
         /// </summary>
@@ -16,6 +18,12 @@ namespace ConsoleGame
         public static ConsoleStartmenu Create()
         {
             return new ConsoleStartmenu();
+        }
+
+        private ConsoleStartmenu()
+        {
+            PlayerTypes = PlayerController.GetPlayers();
+
         }
 
         /// <summary>
@@ -52,8 +60,12 @@ namespace ConsoleGame
 
         private int GetNmbrOfPlayers()
         {
+            foreach (var p in PlayerTypes)
+            {
+                Console.WriteLine(p.Name);
+            }
             int nmbrOfPlayers = 0;
-            string message = "Choose a numerical value between 2 and 4";
+            string message = $"Choose a numerical value between 2 and {PlayerTypes.Count()}";
             Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, 7);
             Console.WriteLine(message);
             Console.SetCursorPosition((Console.WindowWidth) / 2, 8);
@@ -68,7 +80,22 @@ namespace ConsoleGame
 
         private IEnumerable<BasePlayer> CreatePlayers(int nmbrOfPlayers)
         {
-            return null;
+            List<BasePlayer> result = new List<BasePlayer>();
+            for (int i = 0; i < nmbrOfPlayers; i++)
+            {
+                int playerNo = 0;
+                string message = $"Choose player {i + 1}?";
+
+                while (!int.TryParse(Console.ReadLine(), out playerNo) || playerNo < 1 || playerNo > PlayerTypes.Count())
+                {
+                    Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, 7);
+                    Console.WriteLine(message);
+                    Console.SetCursorPosition((Console.WindowWidth) / 2, 8);
+                }
+
+                result.Add((BasePlayer)Activator.CreateInstance(PlayerTypes.ToArray()[playerNo - 1]));
+            }
+            return result;
         }
     }
 }
