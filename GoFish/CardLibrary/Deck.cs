@@ -56,7 +56,7 @@ namespace CardLibrary
                     Card temp = cards[card1];
                     cards[card1] = cards[card2];
                     cards[card2] = temp;
-                    //Console.WriteLine($"byter kort {cards[card1]} med {cards[card2]}");
+                    // Console.WriteLine($"Byter kort {cards[card1]} med {cards[card2]}");
                 }
             }
         }
@@ -74,7 +74,7 @@ namespace CardLibrary
                 return null;
             }
             Card card = cards[0];
-            // se till att det alltid finns ett kort kvar i leken
+            // Ser till att det alltid finns ett kort kvar i leken.
             cards.RemoveAt(0);
             return card;
         }
