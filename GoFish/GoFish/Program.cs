@@ -14,8 +14,6 @@ namespace GoFish
         {
             ConsoleGameController game = new ConsoleGameController();
             game.Run();
-
-            
         }
     }
 }

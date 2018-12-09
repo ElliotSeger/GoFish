@@ -9,20 +9,15 @@ namespace ConsoleGame
 {
     public class ConsoleStartmenu
     {
-        public IEnumerable<Type> PlayerTypes { get; set; }
+        public IEnumerable<string> Players { get; private set; }
+        private PlayerController playerController;
 
-        /// <summary>
-        /// Creates a ConsoleStartmenu when called upon.
-        /// </summary>
-        /// <returns></returns>
-        public static ConsoleStartmenu Create()
-        {
-            return new ConsoleStartmenu();
-        }
 
-        private ConsoleStartmenu()
+
+        public ConsoleStartmenu(PlayerController playerController)
         {
-            PlayerTypes = PlayerController.GetPlayers();
+            this.playerController = playerController;
+            Players = playerController.GetPlayers();
 
         }
 
@@ -63,12 +58,12 @@ namespace ConsoleGame
 
         private int GetNmbrOfPlayers()
         {
-            foreach (var p in PlayerTypes)
+            foreach (var p in Players)
             {
-                Console.WriteLine(p.Name);
+                Console.WriteLine(p);
             }
             int nmbrOfPlayers = 0;
-            string message = $"Choose a numerical value between 2 and {PlayerTypes.Count()}";
+            string message = $"Choose a numerical value between 2 and {Players.Count()}";
             Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, 7);
             Console.WriteLine(message);
             Console.SetCursorPosition((Console.WindowWidth) / 2, 8);
@@ -89,16 +84,16 @@ namespace ConsoleGame
                 int playerNo = 0;
                 string message = $"Choose player {i + 1}?";
 
-                while (!int.TryParse(Console.ReadLine(), out playerNo) || playerNo < 1 || playerNo > PlayerTypes.Count())
+                while (!int.TryParse(Console.ReadLine(), out playerNo) || playerNo < 1 || playerNo > Players.Count())
                 {
                     Console.SetCursorPosition((Console.WindowWidth - message.Length) / 2, 7);
                     Console.WriteLine(message);
                     Console.SetCursorPosition((Console.WindowWidth) / 2, 8);
                 }
 
-                result.Add((BasePlayer)Activator.CreateInstance(PlayerTypes.ToArray()[playerNo - 1]));
+                result.Add(playerController.InstantiatePlayer(Players.ElementAt(playerNo)));
             }
             return result;
         }
     }
-}
+} 

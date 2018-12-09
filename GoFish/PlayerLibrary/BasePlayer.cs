@@ -9,7 +9,7 @@ namespace PlayerLibrary
 {
     public class BasePlayer
     {
-        public Deck CurrentDeck { get; set; }
+        public CardController CurrentDeck { get; set; }
         public List<Card> Hand { get; set; }
 
         public BasePlayer()
@@ -23,7 +23,7 @@ namespace PlayerLibrary
         /// <param name="currentDeck">
         /// The deck that the CurrentDeck is set as.
         /// </param>
-        public BasePlayer(Deck currentDeck)
+        public BasePlayer(CardController currentDeck)
         {
             CurrentDeck = currentDeck;
         }

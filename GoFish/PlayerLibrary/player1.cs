@@ -10,7 +10,7 @@ namespace PlayerLibrary
     class Player1 : BasePlayer
     {
 
-        public Player1(Deck currentDeck) : base(currentDeck)
+        public Player1(CardController currentDeck) : base(currentDeck)
         {
         }
     }

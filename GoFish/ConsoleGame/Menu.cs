@@ -12,7 +12,7 @@ namespace ConsoleGame
         {
             public Option(string text, bool selected, Action function)
             {
-                this.text     = text;
+                this.text = text;
                 this.selected = selected;
                 this.function = function;
             }
@@ -26,7 +26,7 @@ namespace ConsoleGame
         {
             while (true)
             {
-                
+
             }
         }
 
@@ -39,7 +39,7 @@ namespace ConsoleGame
         {
             Console.CursorVisible = false;
 
-            
+
         }
 
         public static Action GetAction(Option[] options)

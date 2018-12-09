@@ -7,9 +7,13 @@ using System.Threading.Tasks;
 
 namespace CardLibrary
 {
-    public class Deck
+    public class CardController
     {
         List<Card> cards = new List<Card>();
+        public CardController()
+        {
+            Initialize();
+        }
 
         /// <summary>
         /// Clears the deck and then creates a new one which is then shuffled.
@@ -27,16 +31,7 @@ namespace CardLibrary
             Shuffle();
         }
 
-        /// <summary>
-        /// Creates and returns a new deck
-        /// </summary>
-        /// <returns></returns>
-        public static Deck Create()
-        {
-            var deck = new Deck();
-            deck.Initialize();
-            return deck;
-        }
+        
 
 
 

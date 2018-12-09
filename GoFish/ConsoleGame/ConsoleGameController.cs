@@ -12,8 +12,10 @@ namespace ConsoleGame
     public class ConsoleGameController
     {
         private IEnumerable<BasePlayer> players;
-        private Deck deck;
+        private CardController deck;
        private ConsoleStartmenu startmenu;
+        private PlayerController playerController;
+
 
         /// <summary>
         /// Runs when the application is started.
@@ -28,8 +30,9 @@ namespace ConsoleGame
         /// </summary>
         public void Initialize()
         {
-            startmenu = ConsoleStartmenu.Create();
-            deck = Deck.Create();
+            deck = new CardController();
+            playerController = new PlayerController();
+            startmenu = new ConsoleStartmenu(playerController);
         }
 
         /// <summary>
