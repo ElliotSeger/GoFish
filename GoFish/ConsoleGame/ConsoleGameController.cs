@@ -13,7 +13,7 @@ namespace ConsoleGame
     {
         private IEnumerable<BasePlayer> players;
         private CardController deck;
-       private ConsoleStartmenu startmenu;
+        private ConsoleStartmenu startmenu;
         private PlayerController playerController;
 
 
@@ -34,7 +34,7 @@ namespace ConsoleGame
             playerController = new PlayerController();
             startmenu = new ConsoleStartmenu(playerController);
         }
-        
+
 
         /// <summary>
         /// Begins the game and creates the players.
@@ -45,14 +45,14 @@ namespace ConsoleGame
             players = startmenu.Execute();
             foreach (var player in players)
             {
+                // Assign the deck to each player so they could pull cards
                 player.CurrentDeck = deck;
+                // Make sure each player gets aware of the opponents
                 player.Opponents = players.Where(p => p.GetType().Name != player.GetType().Name);
+                // Attach a callback delegate to each player to enable callback when cardswapping happens
                 player.CardExchangeAnnouncement += AnnotatePlayersOfCardExchange;
-                // HACK! to test card swapping
-                player.knownCard = (from p in players where p.GetType().Name == "Player1" select p.Hand.First()).First();
-
             }
-            
+
 
             BasePlayer winner = null;
             while (winner == null)
@@ -62,19 +62,29 @@ namespace ConsoleGame
                     var currentPlayer = players.ToArray()[current];
                     currentPlayer.Play();
                 }
-
-
             }
             Console.WriteLine($"Winner is {winner}");
         }
 
+        /// <summary>
+        /// This will be called from all players that has the following statement executed:
+        /// player.CardExchangeAnnouncement += AnnotatePlayersOfCardExchange;
+        /// In each players Play() method there should be a callback to here, just to announce 
+        /// the card swap between two players. It should look like:
+        /// CardExchangeAnnouncement?.Invoke(this, opponent, value, recieved);
+        /// Where "this" identifies the current player, "opponent" the player that is asked for the cards
+        /// "value" is the card value requested and "received" is the cards received from the opponent
+        /// </summary>
+        /// <param name="cardReciever">The player asking for a card</param>
+        /// <param name="cardSender">The player being asked</param>
+        /// <param name="cardValue">Card value asked for</param>
+        /// <param name="returnResult">Collection of cards that is returned from cardSender</param>
         public void AnnotatePlayersOfCardExchange(BasePlayer cardReciever, BasePlayer cardSender, Values cardValue, IEnumerable<Card> returnResult)
         {
-            // Tell every player except cardReciever & cardSender that these two players have asked for and handed over cards.
+            // Tell every player that two players have asked for and handed over cards.
             // ReturnResult is the cards that were handed over. cardValue is the value which was asked for. 
-            //foreach (var player in players.Where(p => p.GetType().Name != cardReciever.GetType().Name && p.GetType().Name != cardSender.GetType().Name))
             foreach (var player in players)
-                {
+            {
                 player.OtherPlayersPlayed(cardReciever, cardSender, cardValue, returnResult);
             }
         }

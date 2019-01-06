@@ -10,9 +10,6 @@ namespace PlayerLibrary
     /// </summary>
     public abstract class BasePlayer
     {
-        // HACK! to test card swapping
-        public Card knownCard;
-
         public CardExchangeAnnouncement CardExchangeAnnouncement { get; set; }
         public Dictionary<string, List<Card>> SwappedCards { get; set; } = new Dictionary<string, List<Card>>();
 
@@ -20,7 +17,7 @@ namespace PlayerLibrary
         /// CurrentDeck could either be injected by the constructor or by it's property
         /// Property injection is also a kind of dependency injection since the owner of the player decides what object to use
         /// Once a CardController is assigned the players hand will be filled with 7 cards
-        /// If needed it could be changed based on number of opponents (2-3 players = 7 cards, >3 players = 5 cards)
+        /// If needed perhaps it could be changed based on number of opponents (2-3 players = 7 cards, >3 players = 5 cards)
         /// </summary>
         public CardController CurrentDeck
         {
@@ -52,13 +49,6 @@ namespace PlayerLibrary
         public IEnumerable<BasePlayer> Opponents { get; set; }
 
         /// <summary>
-        /// Property to indicate that this player resigns or is busted somehow
-        /// </summary>
-        public bool Busted { get; set; }
-
-
-
-        /// <summary>
         /// Empty constructor needs to exist to be able to create an object without injecting a deck
         /// </summary>
         public BasePlayer()
@@ -87,33 +77,75 @@ namespace PlayerLibrary
         public IEnumerable<Card> GetCards(Values value)
         {
             // TODO! If this player is has the card then remove it from hand and return it.
-
-
-            return Hand.Where(card => card.Value == value);
+            var matchingCards = Hand.Where(card => card.Value == value);
+            // Convert the IEnumerable to an array, just to detach the cards in it from the Hand
+            // Otherwise it's not possible to do the remove part in OtherPlayersPlayed
+            return matchingCards.ToArray();
         }
 
+        /// <summary>
+        /// This method could be used as a callback since it follows the definition
+        /// for the delegate CardExchangeAnnouncement. 
+        /// It is also called by ConsoleGameController.AnnotatePlayersOfCardExchange
+        /// </summary>
+        /// <param name="cardReciever"></param>
+        /// <param name="cardSender"></param>
+        /// <param name="cardValue"></param>
+        /// <param name="returnResult"></param>
         public void OtherPlayersPlayed(BasePlayer cardReciever, BasePlayer cardSender, Values cardValue, IEnumerable<Card> returnResult)
         {
-            var reciever = cardReciever.GetType().Name;
-            var sender = cardSender.GetType().Name;
+            // Take care of the hands for the two players
+            UpdateHands(cardReciever, cardSender, returnResult);
+
+            // Take care of the dictionary of known swapped cards for all players
+            UpdateSwappedCards(returnResult, cardReciever.GetType().Name, cardSender.GetType().Name);
+        }
+
+        private void UpdateHands(BasePlayer cardReciever, BasePlayer cardSender, IEnumerable<Card> returnResult)
+        {
+            // Take care of the hand if this is the requesting player
+            if (cardReciever == this)
+            {
+                Hand.AddRange(returnResult);
+            }
+
+            // Take care of the hand if this is the responding player
+            if (cardSender == this)
+            {
+                foreach (var card in returnResult)
+                {
+                    Hand.Remove(card);
+                }
+            }
+        }
+
+        private void UpdateSwappedCards(IEnumerable<Card> returnResult, string reciever, string sender)
+        {
+            // First make sure the cardReciever exists in the dictionary
             if (SwappedCards.ContainsKey(reciever) == false)
             {
                 SwappedCards.Add(reciever, new List<Card>());
             }
+
+            // Then make sure the cardSender exists in the dictionary
+            if (SwappedCards.ContainsKey(sender) == false)
+            {
+                SwappedCards.Add(sender, new List<Card>());
+            }
+
+            // Assign the known cards to cardReciever
             SwappedCards[reciever].AddRange(returnResult);
 
-            if (SwappedCards.ContainsKey(sender))
+            // Remove the known cards from the cardSender
+            foreach (var card in returnResult)
             {
-                foreach (var card in returnResult)
+                var remove = SwappedCards[sender].Where(c => c.Suit == card.Suit && c.Value == card.Value).FirstOrDefault();
+                if (remove != null)
                 {
-                    // BUG! doesn't remove cards that have been taken.
-                    var remove = SwappedCards[sender].Where(c => c.Suit == card.Suit && c.Value == card.Value).FirstOrDefault();
-                    if (remove != null)
-                    {
-                        SwappedCards[sender].Remove(remove);
-                    }
+                    SwappedCards[sender].Remove(remove);
                 }
             }
         }
+
     }
 }

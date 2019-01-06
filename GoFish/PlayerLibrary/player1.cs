@@ -30,20 +30,32 @@ namespace PlayerLibrary
         /// </summary>
         public override void Play()
         {
-            // TODO! Finish behaviour.
+            // TODO! This code is experimental, needs to be rewritten
             // TODO! better way to pick an opponent
             var opponent = Opponents.First();
+
+            // holder for cards returned from opponent
             var cards = new List<Card>();
-            // TODO! add a way to choose the value to pick.
-            // TODO! add a way to  keep check of/alert all players in the chat of which players values are being handed over to who
-            // Player must own at least one card of the value they ask for.
-            var recieved = opponent.GetCards(knownCard.Value);
-            CardExchangeAnnouncement?.Invoke(this, opponent, knownCard.Value, recieved);
+
+            // TODO! Player must own at least one card of the value they ask for.
+            // TODO! add a way to choose what card to ask for, right now hardcoded to Values.Ess
+            var recieved = opponent.GetCards(Values.Ess);
+
+            // Announce the swap of cards, Values.Ess shouldn't be hardcoded
+            CardExchangeAnnouncement?.Invoke(this, opponent, Values.Ess, recieved);
+
+            // Add any cards received to local storage
             cards.AddRange(recieved);
+
+            // Test to see if any cards was returned
             if (cards.Count() == 0)
             {
+                // Otherwise pull a card from the deck
+                // TODO! How to handle end of cards in the deck?
                 cards.Add(CurrentDeck.PullOne());
             }
+
+            // Add whatever cards we have from local storage
             Hand.AddRange(cards);
         }
     }
