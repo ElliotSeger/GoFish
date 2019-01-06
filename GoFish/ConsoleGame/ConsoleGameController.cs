@@ -41,8 +41,11 @@ namespace ConsoleGame
         public void Run()
         {
             players = startmenu.Execute();
-            BasePlayer player1 = new BasePlayer(deck);
-            player1.Play();
+            foreach (var player in players)
+            {
+                player.CurrentDeck = deck;
+                player.Opponents = players.Where(p => p.GetType().Name != player.GetType().Name);
+            }
         }
     }
 }

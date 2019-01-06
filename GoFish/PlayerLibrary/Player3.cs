@@ -7,9 +7,13 @@ using CardLibrary;
 
 namespace PlayerLibrary
 {
-    class Player4 : BasePlayer
+    public class Player3 : BasePlayer
     {
-        public Player4(CardController currentDeck) : base(currentDeck)
+        public Player3()
+        {
+        }
+
+        public Player3(CardController currentDeck) : base(currentDeck)
         {
         }
     }

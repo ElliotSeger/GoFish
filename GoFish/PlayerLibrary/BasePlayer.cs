@@ -9,8 +9,19 @@ namespace PlayerLibrary
 {
     public class BasePlayer
     {
-        public CardController CurrentDeck { get; set; }
+        public CardController CurrentDeck
+        {
+            get { return currentDeck; }
+            set
+            {
+                currentDeck = value;
+                Hand = new List<Card>();
+                Hand.AddRange(currentDeck.PullMany(7));
+            }
+        }
+        private CardController currentDeck;
         public List<Card> Hand { get; set; }
+        public IEnumerable<BasePlayer> Opponents { get; set; }
 
         public BasePlayer()
         {

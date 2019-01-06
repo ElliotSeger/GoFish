@@ -13,7 +13,6 @@ namespace ConsoleGame
         private PlayerController playerController;
 
 
-
         public ConsoleStartmenu(PlayerController playerController)
         {
             this.playerController = playerController;
@@ -29,6 +28,9 @@ namespace ConsoleGame
         /// </returns>
         public IEnumerable<BasePlayer> Execute()
         {
+            return new List<BasePlayer> { new Player1(), new Player2(), new Player3() };
+            // return will be removed later.
+            // TODO! must create startmenu
             Console.CursorVisible = false;
 
             Menu.Option[] options =
