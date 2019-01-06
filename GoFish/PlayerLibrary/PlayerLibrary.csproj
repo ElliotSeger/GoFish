@@ -41,6 +41,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BasePlayer.cs" />
+    <Compile Include="Delegates.cs" />
     <Compile Include="Player1.cs" />
     <Compile Include="Player2.cs" />
     <Compile Include="Player3.cs" />
