@@ -28,11 +28,12 @@ namespace PlayerLibrary
         /// If no card is given player calls CardController.PullOne
         /// If PullOne returns null there are no cards left in the deck.
         /// </summary>
-        public override void Play()
+        public override bool Play()
         {
             // TODO! This code is experimental, needs to be rewritten
             // TODO! better way to pick an opponent
             var opponent = Opponents.First();
+            // lägg till val av opponent.
 
             // holder for cards returned from opponent
             var cards = new List<Card>();
@@ -40,23 +41,33 @@ namespace PlayerLibrary
             // TODO! Player must own at least one card of the value they ask for.
             // TODO! add a way to choose what card to ask for, right now hardcoded to Values.Ess
             var recieved = opponent.GetCards(Values.Ess);
+            // lägg till val av kort.
 
             // Announce the swap of cards, Values.Ess shouldn't be hardcoded
             CardExchangeAnnouncement?.Invoke(this, opponent, Values.Ess, recieved);
 
-            // Add any cards received to local storage
-            cards.AddRange(recieved);
-
             // Test to see if any cards was returned
-            if (cards.Count() == 0)
+            if (recieved.Count() == 0)
             {
                 // Otherwise pull a card from the deck
                 // TODO! How to handle end of cards in the deck?
                 cards.Add(CurrentDeck.PullOne());
+                if (cards.Count == 0)
+                {
+                    return false;
+                }
+                // hur ska vi hantera slut på kortlek?
+            }
+            else
+            {
+                // Add any cards received to local storage
+                cards.AddRange(recieved);
             }
 
             // Add whatever cards we have from local storage
             Hand.AddRange(cards);
+
+            return true;
         }
     }
 }

@@ -59,8 +59,19 @@ namespace ConsoleGame
             {
                 for (int current = 0; current < players.Count(); current++)
                 {
+                    
                     var currentPlayer = players.ToArray()[current];
-                    currentPlayer.Play();
+                    if (!currentPlayer.Play())
+                    {
+                        Console.WriteLine($"player {currentPlayer} is out");
+                        players = players.Where(p => p.GetType().Name != currentPlayer.GetType().Name);
+                        current--;
+                    }
+                    if (players.Count() == 1)
+                    {
+                        winner = players.ToArray()[0];
+                        break;
+                    }
                 }
             }
             Console.WriteLine($"Winner is {winner}");

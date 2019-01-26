@@ -72,11 +72,12 @@ namespace PlayerLibrary
         /// If no card is given player calls CardController.PullOne
         /// If PullOne returns null there are no cards left in the deck.
         /// </summary>
-        public abstract void Play();
+        public abstract bool Play();
 
         public IEnumerable<Card> GetCards(Values value)
         {
-            // TODO! If this player is has the card then remove it from hand and return it.
+            // Linq where is used to find any card that is equal to value, it's a simplified if.
+            // card => card.Value == value is known as lambda expression.
             var matchingCards = Hand.Where(card => card.Value == value);
             // Convert the IEnumerable to an array, just to detach the cards in it from the Hand
             // Otherwise it's not possible to do the remove part in OtherPlayersPlayed
