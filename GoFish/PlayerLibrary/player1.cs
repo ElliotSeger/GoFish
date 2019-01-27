@@ -73,8 +73,7 @@ namespace PlayerLibrary
             {
                 Console.WriteLine($"{this.PlayerName} got {recieved.Count()} cards from {opponent.PlayerName}\n");
             }
-
-            //TODO Look if we have four of some value and then drop them
+            
 
             return true;
         }

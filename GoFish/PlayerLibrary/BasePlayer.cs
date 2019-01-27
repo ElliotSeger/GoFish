@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CardLibrary;
 
 namespace PlayerLibrary
@@ -106,94 +107,108 @@ namespace PlayerLibrary
             UpdateSwappedCardsDictionary(cardReciever.PlayerName, cardSender.PlayerName, cardsReceived);
         }
 
-        protected void UpdateFourOfEach()
-        {
-            if (true)
-            {
-                //OnTheTable.AddRange();
-                //Hand.RemoveRange();
-                //SwappedCards[this.PlayerName].RemoveRange();
-            }
-        }
-
         private void UpdateHands(BasePlayer cardReciever, BasePlayer cardSender, IEnumerable<Card> cardsReceived)
         {
             // Take care of the hand if this is the requesting player
             if (cardReciever == this)
             {
-                Hand.AddRange(cardsReceived);
-
-                // Sort the hand based on the Value
-                Hand.Sort((x, y) => x.Value.CompareTo(y.Value));
-
-                // Create a string for status update
-                string saying = $"{PlayerName} says: \"I have received ";
-                if (cardsReceived.Count() > 0)
-                {
-                    foreach (Card card in cardsReceived)
-                    {
-                        saying += $"{card.Suit} {card.Value}, ";
-                    }
-                    // Remove last ","
-                    saying = saying.Remove(saying.Length - 2);
-                }
-                saying += $"\"\n";
-                saying += $"My hand right now is ";
-                foreach (Card card in Hand)
-                {
-                    saying += $"{card.Suit} {card.Value}, ";
-                }
-                // Remove last ","
-                saying = saying.Remove(saying.Length - 2);
-                saying += $"\"\n";
-                Console.WriteLine(saying);
-
-                var valueGroups = Hand
-                    .GroupBy(c => c.Value, p => p, (key, g) => new { Value = key, Values = g.ToList() })
-                    .Where(g => g.Values.Count == 4)
-                    .ToDictionary(s => s.Value);
-                if (valueGroups != null && valueGroups.Count() > 0)
-                {
-                    saying = $"{PlayerName} got four cards of ";
-                    foreach (var valueGroup in valueGroups)
-                    {
-                        saying += $"{valueGroup.Value}, ";
-                        OnTheTable.AddRange(valueGroup.Value.Values);
-                        Hand.RemoveAll(c => c.Value == valueGroup.Key);
-                    }
-                    // Remove last ","
-                    saying = saying.Remove(saying.Length - 2);
-                    saying += $"\n";
-                    Console.WriteLine(saying);
-                }
+                HandleReciever(cardsReceived);
             }
 
             // Take care of the hand if this is the responding player
             if (cardSender == this)
             {
-                string saying = $"{PlayerName} says: \"I have given away ";
-                if (cardsReceived.Count() > 0)
+                HandleSender(cardsReceived);
+            }
+            Thread.Sleep(2000);
+        }
+
+        private void HandleSender(IEnumerable<Card> cardsReceived)
+        {
+            string saying = $"{PlayerName} says: \"I have given away ";
+            if (cardsReceived.Count() > 0)
+            {
+                saying += CreateListOutput(cardsReceived);
+            }
+            else
+            {
+                saying += "none";
+            }
+            saying += $"\"\n";
+            RemoveFromHand(cardsReceived);
+
+
+            saying += $"My hand right now is ";
+            saying += CreateListOutput(Hand);
+            saying += $"\"\n";
+            Console.WriteLine(saying);
+
+        }
+
+        private void HandleReciever(IEnumerable<Card> cardsReceived)
+        {
+            Hand.AddRange(cardsReceived);
+
+            // Sort the hand based on the Value
+            Hand.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+            // Create a string for status update
+            string saying = $"{PlayerName} says: \"I have received ";
+            if (cardsReceived.Count() > 0)
+            {
+                saying += CreateListOutput(cardsReceived);
+            }
+            else
+            {
+                saying += "none";
+            }
+            saying += $"\"\n";
+            saying += $"My hand right now is ";
+
+            saying += CreateListOutput(Hand);
+            saying += $"\"\n";
+            Console.WriteLine(saying);
+
+            var valueGroups = Hand
+                .GroupBy(c => c.Value, p => p, (key, p) => new { Key = key, Values = p.ToList() })
+                .Where(g => g.Values.Count == 4)
+                .ToDictionary(s => s.Key);
+            if (valueGroups != null && valueGroups.Count() > 0)
+            {
+                saying = $"{PlayerName} got four cards of ";
+                foreach (var card in valueGroups.Values)
                 {
-                    foreach (Card card in cardsReceived)
-                    {
-                        Card cardToRemove = Hand.First(c => c.Suit == card.Suit && c.Value == card.Value);
-                        Hand.Remove(cardToRemove);
-                        saying += $"{card.Suit} {card.Value}, ";
-                    }
-                    // Remove last ","
-                    saying = saying.Remove(saying.Length - 2);
-                }
-                saying += $"\"\n";
-                saying += $"My hand right now is ";
-                foreach (Card card in Hand)
-                {
-                    saying += $"{card.Suit} {card.Value}, ";
+                    saying += $"{card} {card.Key}, ";
+                    OnTheTable.AddRange(valueGroup.Value.Values);
+                    Hand.RemoveAll(c => c.Value == valueGroup.Key);
                 }
                 // Remove last ","
                 saying = saying.Remove(saying.Length - 2);
-                saying += $"\"\n";
+                saying += $"\n";
                 Console.WriteLine(saying);
             }
+        }
+
+        private void RemoveFromHand(IEnumerable<Card> cards)
+        {
+            foreach (Card card in cards)
+            {
+                Card cardToRemove = Hand.First(c => c.Suit == card.Suit && c.Value == card.Value);
+                Hand.Remove(cardToRemove);
+            }
+        }
+
+        private string CreateListOutput(IEnumerable<Card> cards)
+        {
+            var saying = "";
+            foreach (Card card in cards)
+            {
+
+                saying += $"{card.Suit} {card.Value}, ";
+            }
+            // Remove last ","
+            saying = saying.Remove(saying.Length - 2);
+            return saying;
         }
 
         private void UpdateSwappedCardsDictionary(string recieverName, string senderName, IEnumerable<Card> cardsReceived)
