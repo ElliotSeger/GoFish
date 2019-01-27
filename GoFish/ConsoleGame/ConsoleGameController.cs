@@ -54,6 +54,8 @@ namespace ConsoleGame
             {
                 for (int current = 0; current < players.Count(); current++)
                 {
+                    //TODO! Test for empty deck
+                    //TODO! If empty deck, test for different player amount of cards in OnTheTable
                     BasePlayer currentPlayer = players.ToArray()[current];
                     if (!currentPlayer.Play())
                     {
