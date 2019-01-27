@@ -1,7 +1,7 @@
-﻿using CardLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CardLibrary;
 
 namespace PlayerLibrary
 {
@@ -10,8 +10,12 @@ namespace PlayerLibrary
     /// </summary>
     public abstract class BasePlayer
     {
+        protected Random rndCard = new Random();
+
         public CardExchangeAnnouncement CardExchangeAnnouncement { get; set; }
         public Dictionary<string, List<Card>> SwappedCards { get; set; } = new Dictionary<string, List<Card>>();
+        public List<Card> OnTheTable { get; set; } = new List<Card>();
+        public string PlayerName => GetType().Name;
 
         /// <summary>
         /// CurrentDeck could either be injected by the constructor or by it's property
@@ -21,11 +25,9 @@ namespace PlayerLibrary
         /// </summary>
         public CardController CurrentDeck
         {
-            get
-            {
+            get =>
                 // returns the value of the private field currentDeck
-                return currentDeck;
-            }
+                currentDeck;
             set
             {
                 // value is the assigned value to the property, the private field currentDeck will be set to this
@@ -60,11 +62,9 @@ namespace PlayerLibrary
         /// <param name="currentDeck">
         /// The deck that the CurrentDeck is set as.
         /// </param>
-        public BasePlayer(CardController currentDeck)
-        {
+        public BasePlayer(CardController currentDeck) =>
             // This is dependency injection, the creator of the player also give a deck of cards that the player should use
             CurrentDeck = currentDeck;
-        }
 
         /// <summary>
         /// Abstract method for Play
@@ -78,7 +78,11 @@ namespace PlayerLibrary
         {
             // Linq where is used to find any card that is equal to value, it's a simplified if.
             // card => card.Value == value is known as lambda expression.
-            var matchingCards = Hand.Where(card => card.Value == value);
+            if (Hand.Count == 0)
+            {
+                return null;
+            }
+            IEnumerable<Card> matchingCards = Hand.Where(c => c.Value == value);
             // Convert the IEnumerable to an array, just to detach the cards in it from the Hand
             // Otherwise it's not possible to do the remove part in OtherPlayersPlayed
             return matchingCards.ToArray();
@@ -92,58 +96,132 @@ namespace PlayerLibrary
         /// <param name="cardReciever"></param>
         /// <param name="cardSender"></param>
         /// <param name="cardValue"></param>
-        /// <param name="returnResult"></param>
-        public void OtherPlayersPlayed(BasePlayer cardReciever, BasePlayer cardSender, Values cardValue, IEnumerable<Card> returnResult)
+        /// <param name="cardsReceived"></param>
+        public void OtherPlayersPlayed(BasePlayer cardReciever, BasePlayer cardSender, Values cardValue, IEnumerable<Card> cardsReceived)
         {
             // Take care of the hands for the two players
-            UpdateHands(cardReciever, cardSender, returnResult);
+            UpdateHands(cardReciever, cardSender, cardsReceived);
 
             // Take care of the dictionary of known swapped cards for all players
-            UpdateSwappedCards(returnResult, cardReciever.GetType().Name, cardSender.GetType().Name);
+            UpdateSwappedCardsDictionary(cardReciever.PlayerName, cardSender.PlayerName, cardsReceived);
         }
 
-        private void UpdateHands(BasePlayer cardReciever, BasePlayer cardSender, IEnumerable<Card> returnResult)
+        protected void UpdateFourOfEach()
+        {
+            if (true)
+            {
+                //OnTheTable.AddRange();
+                //Hand.RemoveRange();
+                //SwappedCards[this.PlayerName].RemoveRange();
+            }
+        }
+
+        private void UpdateHands(BasePlayer cardReciever, BasePlayer cardSender, IEnumerable<Card> cardsReceived)
         {
             // Take care of the hand if this is the requesting player
             if (cardReciever == this)
             {
-                Hand.AddRange(returnResult);
+                Hand.AddRange(cardsReceived);
+
+                // Sort the hand based on the Value
+                Hand.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+                // Create a string for status update
+                string saying = $"{PlayerName} says: \"I have received ";
+                if (cardsReceived.Count() > 0)
+                {
+                    foreach (Card card in cardsReceived)
+                    {
+                        saying += $"{card.Suit} {card.Value}, ";
+                    }
+                    // Remove last ","
+                    saying = saying.Remove(saying.Length - 2);
+                }
+                saying += $"\"\n";
+                saying += $"My hand right now is ";
+                foreach (Card card in Hand)
+                {
+                    saying += $"{card.Suit} {card.Value}, ";
+                }
+                // Remove last ","
+                saying = saying.Remove(saying.Length - 2);
+                saying += $"\"\n";
+                Console.WriteLine(saying);
+
+                var valueGroups = Hand
+                    .GroupBy(c => c.Value, p => p, (key, g) => new { Value = key, Values = g.ToList() })
+                    .Where(g => g.Values.Count == 4)
+                    .ToDictionary(s => s.Value);
+                if (valueGroups != null && valueGroups.Count() > 0)
+                {
+                    saying = $"{PlayerName} got four cards of ";
+                    foreach (var valueGroup in valueGroups)
+                    {
+                        saying += $"{valueGroup.Value}, ";
+                        OnTheTable.AddRange(valueGroup.Value.Values);
+                        Hand.RemoveAll(c => c.Value == valueGroup.Key);
+                    }
+                    // Remove last ","
+                    saying = saying.Remove(saying.Length - 2);
+                    saying += $"\n";
+                    Console.WriteLine(saying);
+                }
             }
 
             // Take care of the hand if this is the responding player
             if (cardSender == this)
             {
-                foreach (var card in returnResult)
+                string saying = $"{PlayerName} says: \"I have given away ";
+                if (cardsReceived.Count() > 0)
                 {
-                    Hand.Remove(card);
+                    foreach (Card card in cardsReceived)
+                    {
+                        Card cardToRemove = Hand.First(c => c.Suit == card.Suit && c.Value == card.Value);
+                        Hand.Remove(cardToRemove);
+                        saying += $"{card.Suit} {card.Value}, ";
+                    }
+                    // Remove last ","
+                    saying = saying.Remove(saying.Length - 2);
                 }
+                saying += $"\"\n";
+                saying += $"My hand right now is ";
+                foreach (Card card in Hand)
+                {
+                    saying += $"{card.Suit} {card.Value}, ";
+                }
+                // Remove last ","
+                saying = saying.Remove(saying.Length - 2);
+                saying += $"\"\n";
+                Console.WriteLine(saying);
             }
         }
 
-        private void UpdateSwappedCards(IEnumerable<Card> returnResult, string reciever, string sender)
+        private void UpdateSwappedCardsDictionary(string recieverName, string senderName, IEnumerable<Card> cardsReceived)
         {
-            // First make sure the cardReciever exists in the dictionary
-            if (SwappedCards.ContainsKey(reciever) == false)
+            // First make sure the recieverName exists in the dictionary
+            if (SwappedCards.ContainsKey(recieverName) == false)
             {
-                SwappedCards.Add(reciever, new List<Card>());
+                // Create a list for known cards for recieverName
+                SwappedCards.Add(recieverName, new List<Card>());
             }
 
-            // Then make sure the cardSender exists in the dictionary
-            if (SwappedCards.ContainsKey(sender) == false)
+            // Then make sure the senderName exists in the dictionary
+            if (SwappedCards.ContainsKey(senderName) == false)
             {
-                SwappedCards.Add(sender, new List<Card>());
+                // Create a list for known cards for senderName
+                SwappedCards.Add(senderName, new List<Card>());
             }
 
-            // Assign the known cards to cardReciever
-            SwappedCards[reciever].AddRange(returnResult);
+            // Assign the known cards to recieverName
+            SwappedCards[recieverName].AddRange(cardsReceived);
 
-            // Remove the known cards from the cardSender
-            foreach (var card in returnResult)
+            // Remove the known cards for senderName
+            foreach (Card card in cardsReceived)
             {
-                var remove = SwappedCards[sender].Where(c => c.Suit == card.Suit && c.Value == card.Value).FirstOrDefault();
+                Card remove = SwappedCards[senderName].Where(c => c.Suit == card.Suit && c.Value == card.Value).FirstOrDefault();
                 if (remove != null)
                 {
-                    SwappedCards[sender].Remove(remove);
+                    SwappedCards[senderName].Remove(remove);
                 }
             }
         }

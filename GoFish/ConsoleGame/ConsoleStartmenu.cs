@@ -27,14 +27,14 @@ namespace ConsoleGame
         /// </returns>
         public IEnumerable<BasePlayer> Execute()
         {
+            // TODO! This return will be removed later.
+            // TODO! This method must create startmenu and allow plyer selection
             return new List<BasePlayer>
             {
                 playerController.InstantiatePlayer("Player1"),
-                playerController.InstantiatePlayer("Player2"),
-                playerController.InstantiatePlayer("Player3")
+                playerController.InstantiatePlayer("Player2")//,
+                //playerController.InstantiatePlayer("Player3")
             };
-            // return will be removed later.
-            // TODO! must create startmenu
 
             Console.CursorVisible = false;
 

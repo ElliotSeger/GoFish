@@ -1,11 +1,8 @@
-﻿using CardLibrary;
-using ConsoleGame;
-using PlayerLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CardLibrary;
+using PlayerLibrary;
 
 namespace ConsoleGame
 {
@@ -20,10 +17,7 @@ namespace ConsoleGame
         /// <summary>
         /// Runs when the application is started.
         /// </summary>
-        public ConsoleGameController()
-        {
-            Initialize();
-        }
+        public ConsoleGameController() => Initialize();
 
         /// <summary>
         /// Creates a startmenu and a new deck when called upon.
@@ -43,7 +37,8 @@ namespace ConsoleGame
         {
             // Get players and initialize them with deck and opponents
             players = startmenu.Execute();
-            foreach (var player in players)
+
+            foreach (BasePlayer player in players)
             {
                 // Assign the deck to each player so they could pull cards
                 player.CurrentDeck = deck;
@@ -59,8 +54,7 @@ namespace ConsoleGame
             {
                 for (int current = 0; current < players.Count(); current++)
                 {
-                    
-                    var currentPlayer = players.ToArray()[current];
+                    BasePlayer currentPlayer = players.ToArray()[current];
                     if (!currentPlayer.Play())
                     {
                         Console.WriteLine($"player {currentPlayer} is out");
@@ -94,7 +88,7 @@ namespace ConsoleGame
         {
             // Tell every player that two players have asked for and handed over cards.
             // ReturnResult is the cards that were handed over. cardValue is the value which was asked for. 
-            foreach (var player in players)
+            foreach (BasePlayer player in players)
             {
                 player.OtherPlayersPlayed(cardReciever, cardSender, cardValue, returnResult);
             }

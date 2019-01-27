@@ -10,6 +10,15 @@ namespace CardLibrary
     public class CardController
     {
         List<Card> cards = new List<Card>();
+
+        public int CardsLeft
+        {
+            get
+            {
+                return cards.Count;
+            }
+        }
+
         public CardController()
         {
             Initialize();
@@ -30,10 +39,6 @@ namespace CardLibrary
             }
             Shuffle();
         }
-
-        
-
-
 
         /// <summary>
         /// Shuffles the cards at the start of the game.
@@ -91,6 +96,8 @@ namespace CardLibrary
                     result.Add(PullOne());
                 }
             }
+            // Sorting the hand based on cards Value
+            result.Sort((x, y) => x.Value.CompareTo(y.Value));
             return result;
         }
     }

@@ -39,33 +39,42 @@ namespace PlayerLibrary
             var cards = new List<Card>();
 
             // TODO! Player must own at least one card of the value they ask for.
-            // TODO! add a way to choose what card to ask for, right now hardcoded to Values.Ess
-            var recieved = opponent.GetCards(Values.Ess);
+            // TODO! add a way to choose what card to ask for, 
+            // right now hardcoded the the value that is represented most
+            var valueGroups = this.Hand
+                .GroupBy(c => c.Value, p => p, (key, g) => new { Value = key, Values = g.ToList() })
+                .OrderByDescending(s => s.Values.Count)
+                .ToDictionary(s => s.Value);
+            // If valueGroups.Count() == 0 så är handen tom
+            var askForCard = valueGroups.First().Key;
+            Console.WriteLine($"{this.PlayerName} asks {opponent.PlayerName} for a {askForCard}");
+            var recieved = opponent.GetCards(askForCard);
             // lägg till val av kort.
 
-            // Announce the swap of cards, Values.Ess shouldn't be hardcoded
-            CardExchangeAnnouncement?.Invoke(this, opponent, Values.Ess, recieved);
+            // Announce the swap of cards, random card 'askForCard' shouldn't be hardcoded
+            CardExchangeAnnouncement?.Invoke(this, opponent, askForCard, recieved);
 
             // Test to see if any cards was returned
             if (recieved.Count() == 0)
             {
                 // Otherwise pull a card from the deck
-                // TODO! How to handle end of cards in the deck?
-                cards.Add(CurrentDeck.PullOne());
-                if (cards.Count == 0)
+                if (CurrentDeck.CardsLeft == 0)
                 {
+                    // No cards left in the deck, you're out!
                     return false;
                 }
-                // hur ska vi hantera slut på kortlek?
+                Hand.Add(CurrentDeck.PullOne());
+                // Sorting the hand based on cards Value
+                Hand.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+                Console.WriteLine($"No cards received from player {opponent.PlayerName}, pulled one from deck, {CurrentDeck.CardsLeft} left\n");
             }
             else
             {
-                // Add any cards received to local storage
-                cards.AddRange(recieved);
+                Console.WriteLine($"{this.PlayerName} got {recieved.Count()} cards from {opponent.PlayerName}\n");
             }
 
-            // Add whatever cards we have from local storage
-            Hand.AddRange(cards);
+            //TODO Look if we have four of some value and then drop them
 
             return true;
         }
