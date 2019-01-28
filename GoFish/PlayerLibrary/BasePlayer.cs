@@ -166,26 +166,26 @@ namespace PlayerLibrary
             saying += $"My hand right now is ";
 
             saying += CreateListOutput(Hand);
+
             saying += $"\"\n";
             Console.WriteLine(saying);
 
-            var valueGroups = Hand
-                .GroupBy(c => c.Value, p => p, (key, p) => new { Key = key, Values = p.ToList() })
-                .Where(g => g.Values.Count == 4)
-                .ToDictionary(s => s.Key);
-            if (valueGroups != null && valueGroups.Count() > 0)
+            var fourOfEach = Hand
+                .GroupBy(key => key.Value, source => source, (key, cards) => new { Key = key, Value = cards })
+                .Where(group => group.Value.Count() == 4)
+                .ToDictionary(g=>g.Key, g=>g.Value);
+
+            if (fourOfEach != null && fourOfEach.Count() > 0)
             {
-                saying = $"{PlayerName} got four cards of ";
-                foreach (var card in valueGroups.Values)
+                foreach (var group in fourOfEach)
                 {
-                    saying += $"{card} {card.Key}, ";
-                    OnTheTable.AddRange(valueGroup.Value.Values);
-                    Hand.RemoveAll(c => c.Value == valueGroup.Key);
+                    saying = $"{PlayerName} got four cards of {valueGroup.Key}: ";
+                    saying += CreateListOutput(group.Value);
+                    OnTheTable.AddRange(group.Value);
+                    Hand.RemoveAll(c => c.Value == group.Key);
+                    saying += $"\n";
+                    Console.WriteLine(saying);
                 }
-                // Remove last ","
-                saying = saying.Remove(saying.Length - 2);
-                saying += $"\n";
-                Console.WriteLine(saying);
             }
         }
 
@@ -193,8 +193,7 @@ namespace PlayerLibrary
         {
             foreach (Card card in cards)
             {
-                Card cardToRemove = Hand.First(c => c.Suit == card.Suit && c.Value == card.Value);
-                Hand.Remove(cardToRemove);
+                Hand.RemoveAll(c => c.Suit == card.Suit && c.Value == card.Value);
             }
         }
 
@@ -203,7 +202,6 @@ namespace PlayerLibrary
             var saying = "";
             foreach (Card card in cards)
             {
-
                 saying += $"{card.Suit} {card.Value}, ";
             }
             // Remove last ","
