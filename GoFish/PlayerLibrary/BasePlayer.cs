@@ -11,8 +11,6 @@ namespace PlayerLibrary
     /// </summary>
     public abstract class BasePlayer
     {
-        protected Random rndCard = new Random();
-
         public CardExchangeAnnouncement CardExchangeAnnouncement { get; set; }
         public Dictionary<string, List<Card>> SwappedCards { get; set; } = new Dictionary<string, List<Card>>();
         public List<Card> OnTheTable { get; set; } = new List<Card>();
@@ -67,14 +65,63 @@ namespace PlayerLibrary
             // This is dependency injection, the creator of the player also give a deck of cards that the player should use
             CurrentDeck = currentDeck;
 
+        //Abstractions for things that should be strategic different for each player
+        //Selection of an opponent and selection of a card value to ask for
+        public abstract BasePlayer SelectOpponent();
+        public abstract Values SelectValueToAskFor();
+
         /// <summary>
-        /// Abstract method for Play
+        /// Concrete method for Play
         /// Each player should decide which opponent to ask for a card
         /// If no card is given player calls CardController.PullOne
         /// If PullOne returns null there are no cards left in the deck.
+        /// If method returns false then player failed to get a card from opponent or deck
         /// </summary>
-        public abstract bool Play();
+        public bool Play()
+        {
+            //Strategic selection of opponent
+            BasePlayer opponent = SelectOpponent();
+            //Strategic selection of card value
+            Values valueToAskFor = SelectValueToAskFor();
 
+            Console.WriteLine($"{PlayerName} asks {opponent.PlayerName} for a {valueToAskFor}");
+            IEnumerable<Card> recieved = opponent.GetCards(valueToAskFor);
+
+            // Announce the swap of cards, this callback will go back to Game Controller and announced out to all players
+            //First parameter is the reciever, 
+            //second parameter the sender, 
+            //third parameter the card value exchanged 
+            //and the fourth parameter is which cards actually got handed over from sender to reciever
+            CardExchangeAnnouncement?.Invoke(this, opponent, valueToAskFor, recieved);
+
+            // Test to see if any cards was recieved
+            if (recieved.Count() == 0)
+            {
+                // Otherwise pull a card from the deck
+                if (CurrentDeck.CardsLeft == 0)
+                {
+                    // No cards left in the deck, you're out!
+                    return false;
+                }
+                Hand.Add(CurrentDeck.PullOne());
+                // Sorting the hand based on cards Value.
+                Hand.Sort((x, y) => x.Value.CompareTo(y.Value));
+
+                Console.WriteLine($"{PlayerName} didn't recieve any {valueToAskFor} from player {opponent.PlayerName}, pulled one from deck instead, {CurrentDeck.CardsLeft} left in deck\n");
+            }
+            else
+            {
+                Console.WriteLine($"{PlayerName} got {recieved.Count()} {valueToAskFor} from {opponent.PlayerName}\n");
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Called from a player against an opponent to get cards of a specific value that the opponent owns
+        /// </summary>
+        /// <param name="value">Card value asked for</param>
+        /// <returns>IEnumerable of cards from players hand that matches the value asked for</returns>
         public IEnumerable<Card> GetCards(Values value)
         {
             // Linq where is used to find any card that is equal to value, it's a simplified if.
