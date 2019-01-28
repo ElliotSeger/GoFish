@@ -128,7 +128,7 @@ namespace PlayerLibrary
             string saying = $"{PlayerName} says: \"I have given away ";
             if (cardsReceived.Count() > 0)
             {
-                saying += CreateListOutput(cardsReceived);
+                saying += CreateStringOfCards(cardsReceived);
             }
             else
             {
@@ -139,7 +139,7 @@ namespace PlayerLibrary
 
 
             saying += $"My hand right now is ";
-            saying += CreateListOutput(Hand);
+            saying += CreateStringOfCards(Hand);
             saying += $"\"\n";
             Console.WriteLine(saying);
 
@@ -156,7 +156,7 @@ namespace PlayerLibrary
             string saying = $"{PlayerName} says: \"I have received ";
             if (cardsReceived.Count() > 0)
             {
-                saying += CreateListOutput(cardsReceived);
+                saying += CreateStringOfCards(cardsReceived);
             }
             else
             {
@@ -165,22 +165,22 @@ namespace PlayerLibrary
             saying += $"\"\n";
             saying += $"My hand right now is ";
 
-            saying += CreateListOutput(Hand);
+            saying += CreateStringOfCards(Hand);
 
             saying += $"\"\n";
             Console.WriteLine(saying);
 
-            var fourOfEach = Hand
+            Dictionary<Values, IEnumerable<Card>> fourOfEach = Hand
                 .GroupBy(key => key.Value, source => source, (key, cards) => new { Key = key, Value = cards })
                 .Where(group => group.Value.Count() == 4)
-                .ToDictionary(g=>g.Key, g=>g.Value);
+                .ToDictionary(g => g.Key, g => g.Value);
 
             if (fourOfEach != null && fourOfEach.Count() > 0)
             {
-                foreach (var group in fourOfEach)
+                foreach (KeyValuePair<Values, IEnumerable<Card>> group in fourOfEach)
                 {
                     saying = $"{PlayerName} got four cards of {group.Key}: ";
-                    saying += CreateListOutput(group.Value);
+                    saying += CreateStringOfCards(group.Value);
                     OnTheTable.AddRange(group.Value);
                     Hand.RemoveAll(c => c.Value == group.Key);
                     saying += $"\n";
@@ -197,9 +197,14 @@ namespace PlayerLibrary
             }
         }
 
-        private string CreateListOutput(IEnumerable<Card> cards)
+        private string CreateStringOfCards(IEnumerable<Card> cards)
         {
-            var saying = "";
+            if (cards.Count() == 0)
+            {
+                return "none";
+            }
+
+            string saying = "";
             foreach (Card card in cards)
             {
                 saying += $"{card.Suit} {card.Value}, ";

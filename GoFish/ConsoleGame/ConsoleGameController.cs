@@ -80,7 +80,7 @@ namespace ConsoleGame
         /// the card swap between two players. It should look like:
         /// CardExchangeAnnouncement?.Invoke(this, opponent, value, recieved);
         /// Where "this" identifies the current player, "opponent" the player that is asked for the cards
-        /// "value" is the card value requested and "received" is the cards received from the opponent
+        /// "value" is the card value requested and "recieved" is the cards recieved from the opponent
         /// </summary>
         /// <param name="cardReciever">The player asking for a card</param>
         /// <param name="cardSender">The player being asked</param>

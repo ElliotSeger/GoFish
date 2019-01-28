@@ -1,7 +1,7 @@
-﻿using CardLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using CardLibrary;
 
 namespace PlayerLibrary
 {
@@ -27,34 +27,26 @@ namespace PlayerLibrary
         /// Each player should decide which opponent to ask for a card
         /// If no card is given player calls CardController.PullOne
         /// If PullOne returns null there are no cards left in the deck.
+        /// If method returns false then player failed to get a card from opponent or deck
         /// </summary>
         public override bool Play()
         {
-            // TODO! This code is experimental, needs to be rewritten
-            // TODO! better way to pick an opponent
-            var opponent = Opponents.First();
-            // lägg till val av opponent.
+            //Strategic selection of opponent
+            BasePlayer opponent = SelectOpponent();
+            //Strategic selection of card value
+            Values valueToAskFor = SelectValueToAskFor();
 
-            // holder for cards returned from opponent
-            var cards = new List<Card>();
+            Console.WriteLine($"{PlayerName} asks {opponent.PlayerName} for a {valueToAskFor}");
+            IEnumerable<Card> recieved = opponent.GetCards(valueToAskFor);
 
-            // TODO! Player must own at least one card of the value they ask for.
-            // TODO! add a way to choose what card to ask for, 
-            // right now hardcoded the the value that is represented most
-            var valueGroups = this.Hand
-                .GroupBy(c => c.Value, p => p, (key, g) => new { Value = key, Values = g.ToList() })
-                .OrderByDescending(s => s.Values.Count)
-                .ToDictionary(s => s.Value);
-            // If valueGroups.Count() == 0 så är handen tom
-            var askForCard = valueGroups.First().Key;
-            Console.WriteLine($"{this.PlayerName} asks {opponent.PlayerName} for a {askForCard}");
-            var recieved = opponent.GetCards(askForCard);
-            // lägg till val av kort.
+            // Announce the swap of cards, this callback will go back to Game Controller and announced out to all players
+            //First parameter is the reciever, 
+            //second parameter the sender, 
+            //third parameter the card value exchanged 
+            //and the fourth parameter is which cards actually got handed over from sender to reciever
+            CardExchangeAnnouncement?.Invoke(this, opponent, valueToAskFor, recieved);
 
-            // Announce the swap of cards, random card 'askForCard' shouldn't be hardcoded
-            CardExchangeAnnouncement?.Invoke(this, opponent, askForCard, recieved);
-
-            // Test to see if any cards was returned
+            // Test to see if any cards was recieved
             if (recieved.Count() == 0)
             {
                 // Otherwise pull a card from the deck
@@ -64,18 +56,37 @@ namespace PlayerLibrary
                     return false;
                 }
                 Hand.Add(CurrentDeck.PullOne());
-                // Sorting the hand based on cards Value
+                // Sorting the hand based on cards Value.
                 Hand.Sort((x, y) => x.Value.CompareTo(y.Value));
 
-                Console.WriteLine($"No cards received from player {opponent.PlayerName}, pulled one from deck, {CurrentDeck.CardsLeft} left\n");
+                Console.WriteLine($"{PlayerName} didn't recieve any {valueToAskFor} from player {opponent.PlayerName}, pulled one from deck instead, {CurrentDeck.CardsLeft} left in deck\n");
             }
             else
             {
-                Console.WriteLine($"{this.PlayerName} got {recieved.Count()} cards from {opponent.PlayerName}\n");
+                Console.WriteLine($"{PlayerName} got {recieved.Count()} {valueToAskFor} from {opponent.PlayerName}\n");
             }
-            
 
             return true;
+        }
+
+        //TODO! Make a strategic selection of opponent to ask for cards
+        private BasePlayer SelectOpponent() =>
+            // TODO! This code is experimental, needs to be rewritten
+            // TODO! better way to pick an opponent
+            Opponents.First();
+
+        //TODO! Make a strategic selection of card value to ask for
+        private Values SelectValueToAskFor()
+        {
+            // TODO! add a way to choose what card to ask for, 
+            // right now hardcoded to the value that is represented most
+            Dictionary<Values, IEnumerable<Card>> valueGroups = Hand
+                .GroupBy(key => key.Value, source => source, (key, cards) => new { Key = key, Value = cards })
+                .OrderByDescending(s => s.Value.Count())
+                .ToDictionary(g => g.Key, g => g.Value);
+            // If valueGroups.Count() == 0 så är handen tom
+
+            return valueGroups.First().Key;
         }
     }
 }
