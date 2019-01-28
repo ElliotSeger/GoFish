@@ -179,7 +179,7 @@ namespace PlayerLibrary
             {
                 foreach (var group in fourOfEach)
                 {
-                    saying = $"{PlayerName} got four cards of {valueGroup.Key}: ";
+                    saying = $"{PlayerName} got four cards of {group.Key}: ";
                     saying += CreateListOutput(group.Value);
                     OnTheTable.AddRange(group.Value);
                     Hand.RemoveAll(c => c.Value == group.Key);
