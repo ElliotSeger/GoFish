@@ -217,19 +217,19 @@ namespace PlayerLibrary
             saying += $"\"\n";
             Console.WriteLine(saying);
 
-            Dictionary<Values, IEnumerable<Card>> fourOfEach = Hand
+            Dictionary<Values, IEnumerable<Card>> quads = Hand
                 .GroupBy(key => key.Value, source => source, (key, cards) => new { Key = key, Value = cards })
-                .Where(group => group.Value.Count() == 4)
-                .ToDictionary(g => g.Key, g => g.Value);
+                //.Where(group => group.Value.Count() == 4)
+                //.ToDictionary(g => g.Key, g => g.Value);
 
-            if (fourOfEach != null && fourOfEach.Count() > 0)
+            if (quads != null && quads.Count() > 0)
             {
-                foreach (KeyValuePair<Values, IEnumerable<Card>> group in fourOfEach)
+                foreach (KeyValuePair<Values, IEnumerable<Card>> singleQuad in quads)
                 {
-                    saying = $"{PlayerName} got four cards of {group.Key}: ";
-                    saying += CreateStringOfCards(group.Value);
-                    OnTheTable.AddRange(group.Value);
-                    Hand.RemoveAll(c => c.Value == group.Key);
+                    saying = $"{PlayerName} got four cards of {singleQuad.Key}: ";
+                    saying += CreateStringOfCards(singleQuad.Value);
+                    OnTheTable.AddRange(singleQuad.Value);
+                    Hand.RemoveAll(c => c.Value == singleQuad.Key);
                     saying += $"\n";
                     Console.WriteLine(saying);
                 }
@@ -251,14 +251,7 @@ namespace PlayerLibrary
                 return "none";
             }
 
-            string saying = "";
-            foreach (Card card in cards)
-            {
-                saying += $"{card.Suit} {card.Value}, ";
-            }
-            // Remove last ","
-            saying = saying.Remove(saying.Length - 2);
-            return saying;
+            return string.Join(", ", cards);
         }
 
         private void UpdateSwappedCardsDictionary(string recieverName, string senderName, IEnumerable<Card> cardsReceived)

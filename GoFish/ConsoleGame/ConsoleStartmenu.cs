@@ -32,7 +32,7 @@ namespace ConsoleGame
             return new List<BasePlayer>
             {
                 playerController.InstantiatePlayer("Player1"),
-                playerController.InstantiatePlayer("Player2")//,
+                playerController.InstantiatePlayer("HumanPlayer")//,
                 //playerController.InstantiatePlayer("Player3")
             };
 
