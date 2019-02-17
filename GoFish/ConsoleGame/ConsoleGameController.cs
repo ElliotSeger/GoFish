@@ -12,12 +12,17 @@ namespace ConsoleGame
         private CardController deck;
         private ConsoleStartmenu startmenu;
         private PlayerController playerController;
+        private IGenericViewModel vm;
 
 
         /// <summary>
         /// Runs when the application is started.
         /// </summary>
-        public ConsoleGameController() => Initialize();
+        public ConsoleGameController(IGenericViewModel vm)
+        {
+            this.vm = vm;
+            Initialize();
+        }
 
         /// <summary>
         /// Creates a startmenu and a new deck when called upon.
@@ -25,7 +30,7 @@ namespace ConsoleGame
         public void Initialize()
         {
             deck = new CardController();
-            playerController = new PlayerController();
+            playerController = new PlayerController(vm);
             startmenu = new ConsoleStartmenu(playerController);
         }
 

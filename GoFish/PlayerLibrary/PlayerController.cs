@@ -13,7 +13,7 @@ namespace PlayerLibrary
     {
         private Dictionary<string, Type> players = new Dictionary<string, Type>();
 
-        public PlayerController()
+        public PlayerController(IGenericViewModel vm)
         {
             foreach (var item in Assembly.GetAssembly(typeof(BasePlayer)).GetTypes().Where(theType => theType.IsSubclassOf(typeof(BasePlayer))))
             {

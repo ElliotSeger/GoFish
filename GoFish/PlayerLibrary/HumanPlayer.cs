@@ -56,14 +56,18 @@ namespace PlayerLibrary
             {
                 Console.WriteLine($"You got {valueGroup.Value} cards of Value {valueGroup.Key}");
             }
+            string selectedValue = string.Empty;
+            Values result = Values.Noll;
+            do
+            {
+                do
+                {
+                    //Fråga efter ett Values, anges som en sträng (Ess, Kung, Trea osv)
+                    Console.WriteLine($"Select a value to ask for:");
+                    selectedValue = Console.ReadLine();
+                } while (!Enum.TryParse(selectedValue, true, out result));
 
-            //Fråga efter ett Values, anges som en sträng (Ess, Kung, Trea osv)
-            Console.WriteLine($"Select a value to ask for:");
-            string selectedValue = Console.ReadLine();
-
-            //Konvertera den inmatade strängen till ett riktig Values, du kan använda TryParse här också...
-            Values result = (Values)Enum.Parse(typeof(Values), selectedValue);
-
+            } while (result < Values.Noll || result > Values.Kung || !valueGroups.Any(v => v.Key == result));
             //returnera det valda values (valör)
             return result;
         }
