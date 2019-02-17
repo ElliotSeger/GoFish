@@ -219,8 +219,8 @@ namespace PlayerLibrary
 
             Dictionary<Values, IEnumerable<Card>> quads = Hand
                 .GroupBy(key => key.Value, source => source, (key, cards) => new { Key = key, Value = cards })
-                //.Where(group => group.Value.Count() == 4)
-                //.ToDictionary(g => g.Key, g => g.Value);
+                .Where(group => group.Value.Count() == 4)
+                .ToDictionary(g => g.Key, g => g.Value);
 
             if (quads != null && quads.Count() > 0)
             {

@@ -43,10 +43,7 @@ namespace PlayerLibrary
 
         public override Values SelectValueToAskFor()
         {
-            Dictionary<Values, IEnumerable<Card>> SuitsInHand = Hand
-                .GroupBy(key => key.Value, source => source, (key, cards) => new { Key = key, Value = cards });
-                
-
+            return Values.Dam;
         }
     }
 }
