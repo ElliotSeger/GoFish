@@ -54,6 +54,10 @@
       <Project>{72BC700B-E6AC-4F64-8DA7-2823D78E5047}</Project>
       <Name>CardLibrary</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{9f76212c-435c-4b14-8c64-16d48bff93ae}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

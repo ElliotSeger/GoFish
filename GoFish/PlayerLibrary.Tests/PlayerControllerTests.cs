@@ -10,7 +10,7 @@ namespace PlayerLibrary.Tests
         [TestMethod]
         public void TestPlayerControllerReturnsPlayer1()
         {
-            PlayerController pc = new PlayerController();
+            PlayerController pc = new PlayerController(new DummyViewModel());
             var searchFor = "Player1";
             var expected = true;
             var actual = pc.GetPlayers().Contains(searchFor);
@@ -20,7 +20,7 @@ namespace PlayerLibrary.Tests
         [TestMethod]
         public void TestPlayerControllerReturnsInstanceOfPlayer1()
         {
-            PlayerController pc = new PlayerController();
+            PlayerController pc = new PlayerController(new DummyViewModel());
             var searchFor = "Player1";
             var expected = typeof(Player1);
             var actual = pc.InstantiatePlayer(searchFor).GetType();

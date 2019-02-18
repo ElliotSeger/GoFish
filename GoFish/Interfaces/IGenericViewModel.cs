@@ -1,10 +1,12 @@
-﻿using PlayerLibrary;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using CardLibrary;
 
 namespace Interfaces
 {
     public interface IGenericViewModel
     {
-        void ViewOpponent(IEnumerable<BasePlayer> opponents);
+        IBasePlayer SelectOpponent(IEnumerable<IBasePlayer> opponents);
+        Values SelectCardValue(IEnumerable<Card> hand);
+        void ShowMessage(string message);
     }
 }

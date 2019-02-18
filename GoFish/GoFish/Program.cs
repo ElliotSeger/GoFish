@@ -1,4 +1,5 @@
 ﻿using ConsoleGame;
+using Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,7 +13,8 @@ namespace GoFish
     {
         static void Main(string[] args)
         {
-            ConsoleGameController game = new ConsoleGameController();
+            IGenericViewModel vm = new ConsoleViewModel();
+            ConsoleGameController game = new ConsoleGameController(vm);
             game.Run();
         }
     }

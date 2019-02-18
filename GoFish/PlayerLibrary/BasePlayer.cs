@@ -3,18 +3,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using CardLibrary;
+using Interfaces;
 
 namespace PlayerLibrary
 {
     /// <summary>
     /// Abstract class for standard behavior of a player
     /// </summary>
-    public abstract class BasePlayer
+    public abstract class BasePlayer: IBasePlayer
     {
         public CardExchangeAnnouncement CardExchangeAnnouncement { get; set; }
         public Dictionary<string, List<Card>> SwappedCards { get; set; } = new Dictionary<string, List<Card>>();
         public List<Card> OnTheTable { get; set; } = new List<Card>();
+
+        // This property is in the interface IBasePlayer to be possible to interchange names with the viewmodel
         public string PlayerName => GetType().Name;
+        public PlayerTypes PlayerType { get; protected set; }
 
         /// <summary>
         /// CurrentDeck could either be injected by the constructor or by it's property
@@ -49,6 +53,10 @@ namespace PlayerLibrary
         /// </summary>
         public IEnumerable<BasePlayer> Opponents { get; set; }
 
+        // Callbacks to the viewmodel to interact with console/wpf etc
+        public SelectOpponentDelegate SelectOpponentsCallback { get; set; }
+        public SelectCardValueDelegate SelectCardValueCallback { get; set; }
+        public ShowMessageDelegate ShowMessageCallback { get; set; }
         /// <summary>
         /// Empty constructor needs to exist to be able to create an object without injecting a deck
         /// </summary>
@@ -84,7 +92,7 @@ namespace PlayerLibrary
             //Strategic selection of card value
             Values valueToAskFor = SelectValueToAskFor();
 
-            Console.WriteLine($"{PlayerName} asks {opponent.PlayerName} for a {valueToAskFor}");
+            ShowMessageCallback?.Invoke($"{PlayerName} asks {opponent.PlayerName} for a {valueToAskFor}");
             IEnumerable<Card> recieved = opponent.GetCards(valueToAskFor);
 
             // Announce the swap of cards, this callback will go back to Game Controller and announced out to all players
@@ -107,11 +115,11 @@ namespace PlayerLibrary
                 // Sorting the hand based on cards Value.
                 Hand.Sort((x, y) => x.Value.CompareTo(y.Value));
 
-                Console.WriteLine($"{PlayerName} didn't recieve any {valueToAskFor} from player {opponent.PlayerName}, pulled one from deck instead, {CurrentDeck.CardsLeft} left in deck\n");
+                ShowMessageCallback?.Invoke($"{PlayerName} didn't recieve any {valueToAskFor} from player {opponent.PlayerName}, pulled one from deck instead, {CurrentDeck.CardsLeft} left in deck\n");
             }
             else
             {
-                Console.WriteLine($"{PlayerName} got {recieved.Count()} {valueToAskFor} from {opponent.PlayerName}\n");
+                ShowMessageCallback?.Invoke($"{PlayerName} got {recieved.Count()} {valueToAskFor} from {opponent.PlayerName}\n");
             }
 
             return true;
@@ -188,7 +196,7 @@ namespace PlayerLibrary
             saying += $"My hand right now is ";
             saying += CreateStringOfCards(Hand);
             saying += $"\"\n";
-            Console.WriteLine(saying);
+            ShowMessageCallback?.Invoke(saying);
 
         }
 
@@ -215,7 +223,7 @@ namespace PlayerLibrary
             saying += CreateStringOfCards(Hand);
 
             saying += $"\"\n";
-            Console.WriteLine(saying);
+            ShowMessageCallback?.Invoke(saying);
 
             Dictionary<Values, IEnumerable<Card>> quads = Hand
                 .GroupBy(key => key.Value, source => source, (key, cards) => new { Key = key, Value = cards })
@@ -231,7 +239,7 @@ namespace PlayerLibrary
                     OnTheTable.AddRange(singleQuad.Value);
                     Hand.RemoveAll(c => c.Value == singleQuad.Key);
                     saying += $"\n";
-                    Console.WriteLine(saying);
+                    ShowMessageCallback?.Invoke(saying);
                 }
             }
         }

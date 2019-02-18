@@ -57,6 +57,10 @@
       <Project>{781E0728-C9EF-4594-A6DF-82D209E2EC38}</Project>
       <Name>ConsoleGame</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Interfaces\Interfaces.csproj">
+      <Project>{9F76212C-435C-4B14-8C64-16D48BFF93AE}</Project>
+      <Name>Interfaces</Name>
+    </ProjectReference>
     <ProjectReference Include="..\PlayerLibrary\PlayerLibrary.csproj">
       <Project>{DB4B310E-9908-4F12-ABA5-CE4977C0A39E}</Project>
       <Name>PlayerLibrary</Name>

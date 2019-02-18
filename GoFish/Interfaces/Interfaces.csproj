@@ -40,8 +40,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Delegates.cs" />
+    <Compile Include="IBasePlayer.cs" />
     <Compile Include="IGenericViewModel.cs" />
+    <Compile Include="PlayerTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CardLibrary\CardLibrary.csproj">
+      <Project>{72BC700B-E6AC-4F64-8DA7-2823D78E5047}</Project>
+      <Name>CardLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

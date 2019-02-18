@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CardLibrary;
+using Interfaces;
 
 namespace PlayerLibrary
 {
@@ -20,7 +21,9 @@ namespace PlayerLibrary
         /// The deck that the CurrentDeck is set as.
         /// </param>
         public Player2(CardController currentDeck) : base(currentDeck)
-        { }
+        {
+            PlayerType = PlayerTypes.Computer;
+        }
 
         //TODO! Make a strategic selection of opponent to ask for cards
         public override BasePlayer SelectOpponent() =>
