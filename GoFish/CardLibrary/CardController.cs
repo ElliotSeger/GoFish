@@ -56,7 +56,6 @@ namespace CardLibrary
                     Card temp = cards[card1];
                     cards[card1] = cards[card2];
                     cards[card2] = temp;
-                    // Console.WriteLine($"Byter kort {cards[card1]} med {cards[card2]}");
                 }
             }
         }
