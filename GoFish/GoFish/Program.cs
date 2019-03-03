@@ -1,4 +1,5 @@
-﻿using CardLibrary;
+﻿using System;
+using CardLibrary;
 using ConsoleGame;
 using GameLibrary;
 using Interfaces;
@@ -18,6 +19,8 @@ namespace GoFish
             IStartMenu startMenu = new ConsoleStartmenu(playerController, viewModel);
             GameController game = new GameController(startMenu, viewModel, cardController, playerController);
             game.Run();
+            Console.WriteLine("Press any key to continue...");
+            Console.ReadKey();
         }
     }
 }

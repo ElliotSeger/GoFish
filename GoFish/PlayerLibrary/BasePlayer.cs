@@ -90,7 +90,10 @@ namespace PlayerLibrary
             IBasePlayer opponent = SelectOpponent();
             //Strategic selection of card value
             Values valueToAskFor = SelectValueToAskFor();
-
+            if (valueToAskFor == Values.Noll)
+            {
+                return true;
+            }
             ShowMessageCallback?.Invoke($"{PlayerName} asks {opponent.PlayerName} for a {valueToAskFor}");
             IEnumerable<Card> recieved = opponent.GetCards(valueToAskFor);
 
@@ -164,13 +167,13 @@ namespace PlayerLibrary
         private void UpdateHands(IBasePlayer cardReciever, IBasePlayer cardSender, IEnumerable<Card> cardsReceived)
         {
             // Take care of the hand if this is the requesting player
-            if (cardReciever == this)
+            if (cardReciever == this && cardsReceived != null)
             {
                 HandleReciever(cardsReceived);
             }
 
             // Take care of the hand if this is the responding player
-            if (cardSender == this)
+            if (cardSender == this && cardsReceived != null)
             {
                 HandleSender(cardsReceived);
             }
@@ -236,6 +239,7 @@ namespace PlayerLibrary
                 {
                     saying = $"{PlayerName} got four cards of {singleQuad.Key}: ";
                     saying += CreateStringOfCards(singleQuad.Value);
+                    saying += ". putting them on the table";
                     OnTheTable.AddRange(singleQuad.Value);
                     Hand.RemoveAll(c => c.Value == singleQuad.Key);
                     saying += $"\n";
@@ -279,7 +283,10 @@ namespace PlayerLibrary
             }
 
             // Assign the known cards to recieverName
-            SwappedCards[recieverName].AddRange(cardsReceived);
+            if (cardsReceived != null)
+            {
+                SwappedCards[recieverName].AddRange(cardsReceived);
+            }
 
             // Remove the known cards for senderName
             foreach (Card card in cardsReceived)

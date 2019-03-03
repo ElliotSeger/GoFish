@@ -37,7 +37,10 @@ namespace PlayerLibrary
                 .OrderByDescending(s => s.Value.Count())
                 .ToDictionary(g => g.Key, g => g.Value);
             // TODO! If valueGroups.Count() == 0 så är handen tom
-
+            if (valueGroups.Count() == 0)
+            {
+                return Values.Noll;
+            }
             return valueGroups.First().Key;
         }
     }

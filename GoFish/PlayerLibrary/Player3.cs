@@ -38,6 +38,10 @@ namespace PlayerLibrary
                 .ToDictionary(g => g.Key, g => g.Value);
             // If valueGroups.Count() == 0 så är handen tom
 
+            if (valueGroups.Count() == 0)
+            {
+                return Values.Noll;
+            }
             return valueGroups.First().Key;
         }
     }
