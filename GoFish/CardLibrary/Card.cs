@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace CardLibrary
+﻿namespace CardLibrary
 {
     public class Card
     {
@@ -15,18 +13,14 @@ namespace CardLibrary
         /// </param>
         public Card(Suits suit, Values value)
         {
-            this.Suit = suit;
-            this.Value = value;
+            Suit = suit;
+            Value = value;
         }
 
         public Suits Suit { get; set; }
         public Values Value { get; set; }
 
 
-        public override string ToString()
-        {
-            return $"{Suit} {(Values)Value}";
-            
-        }
+        public override string ToString() => $"{Suit} {Value}";
     }
 }

@@ -8,22 +8,38 @@ namespace PlayerLibrary.Tests
     public class PlayerControllerTests
     {
         [TestMethod]
-        public void TestPlayerControllerReturnsPlayer1()
+        public void TestPlayerControllerContainsPlayer1()
         {
+            // Use a mocked or faked viewmodel since there's no need for
+            // input and output
+
+            // Arrange
             PlayerController pc = new PlayerController(new DummyViewModel());
-            var searchFor = "Player1";
-            var expected = true;
-            var actual = pc.GetPlayers().Contains(searchFor);
+            string searchFor = "Player1";
+            bool expected = true;
+
+            // Act
+            bool actual = pc.GetPlayers().Contains(searchFor);
+
+            // Assert
             Assert.AreEqual(expected, actual);
         }
 
         [TestMethod]
         public void TestPlayerControllerReturnsInstanceOfPlayer1()
         {
+            // Use a mocked or faked viewmodel since there's no need for
+            // input and output
+
+            // Arrange
             PlayerController pc = new PlayerController(new DummyViewModel());
-            var searchFor = "Player1";
-            var expected = typeof(Player1);
-            var actual = pc.InstantiatePlayer(searchFor).GetType();
+            string searchFor = "Player1";
+            Type expected = typeof(Player1);
+
+            // Act
+            Type actual = pc.InstantiatePlayer(searchFor).GetType();
+
+            // Assert
             Assert.AreEqual(expected, actual);
         }
     }

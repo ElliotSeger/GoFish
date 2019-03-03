@@ -43,6 +43,7 @@
     <Compile Include="Delegates.cs" />
     <Compile Include="IBasePlayer.cs" />
     <Compile Include="IGenericViewModel.cs" />
+    <Compile Include="IStartMenu.cs" />
     <Compile Include="PlayerTypes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

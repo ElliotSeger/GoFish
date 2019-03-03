@@ -1,28 +1,17 @@
-﻿using CardLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CardLibrary
 {
     public class CardController
     {
-        List<Card> cards = new List<Card>();
+        private readonly List<Card> cards = new List<Card>();
 
-        public int CardsLeft
-        {
-            get
-            {
-                return cards.Count;
-            }
-        }
+        public int CardsLeft => cards.Count;
 
-        public CardController()
-        {
-            Initialize();
-        }
+        // Constructor
+        public CardController() => Initialize();
 
         /// <summary>
         /// Clears the deck and then creates a new one which is then shuffled.
@@ -70,10 +59,10 @@ namespace CardLibrary
         {
             if (cards.Count == 0)
             {
+                // Ser till att det alltid finns ett kort kvar i leken.
                 return null;
             }
             Card card = cards[0];
-            // Ser till att det alltid finns ett kort kvar i leken.
             cards.RemoveAt(0);
             return card;
         }
@@ -95,7 +84,7 @@ namespace CardLibrary
                     result.Add(PullOne());
                 }
             }
-            // Sorting the hand based on cards Value
+            // Sorting the returned cards based on each cards Value
             result.Sort((x, y) => x.Value.CompareTo(y.Value));
             return result;
         }

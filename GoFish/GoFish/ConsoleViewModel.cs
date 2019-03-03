@@ -1,13 +1,10 @@
-﻿using CardLibrary;
-using Interfaces;
-using PlayerLibrary;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using CardLibrary;
+using Interfaces;
 
-namespace ConsoleGame
+namespace GoFish
 {
     public class ConsoleViewModel : IGenericViewModel
     {
@@ -54,10 +51,7 @@ namespace ConsoleGame
             return result;
         }
 
-        public void ShowMessage(string message)
-        {
-            Console.WriteLine(message);
-        }
+        public void ShowMessage(string message) => Console.WriteLine(message);
 
     }
 }

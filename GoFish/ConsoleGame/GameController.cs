@@ -5,22 +5,23 @@ using CardLibrary;
 using Interfaces;
 using PlayerLibrary;
 
-namespace ConsoleGame
+namespace GameLibrary
 {
-    public class ConsoleGameController
+    public class GameController
     {
-        private IEnumerable<BasePlayer> players;
+        private IEnumerable<IBasePlayer> players;
         private CardController deck;
-        private ConsoleStartmenu startmenu;
         private PlayerController playerController;
-        private IGenericViewModel vm;
+        private readonly IGenericViewModel vm;
+        private readonly IStartMenu sm;
 
 
         /// <summary>
         /// Runs when the application is started.
         /// </summary>
-        public ConsoleGameController(IGenericViewModel vm)
+        public GameController(IStartMenu sm, IGenericViewModel vm)
         {
+            this.sm = sm;
             this.vm = vm;
             Initialize();
         }
@@ -32,7 +33,6 @@ namespace ConsoleGame
         {
             deck = new CardController();
             playerController = new PlayerController(vm);
-            startmenu = new ConsoleStartmenu(playerController);
         }
 
 
@@ -42,27 +42,27 @@ namespace ConsoleGame
         public void Run()
         {
             // Get players and initialize them with deck and opponents
-            players = startmenu.Execute();
+            players = sm.Execute();
 
-            foreach (BasePlayer player in players)
+            foreach (IBasePlayer player in players)
             {
                 // Assign the deck to each player so they could pull cards
                 player.CurrentDeck = deck;
                 // Make sure each player gets aware of the opponents
-                player.Opponents = players.Where(p => p.GetType().Name != player.GetType().Name);
+                player.Opponents = players.Where(p => p.PlayerName != player.PlayerName);
                 // Attach a callback delegate to each player to enable callback when cardswapping happens
                 player.CardExchangeAnnouncement += AnnotatePlayersOfCardExchange;
             }
 
 
-            BasePlayer winner = null;
+            IBasePlayer winner = null;
             while (winner == null)
             {
                 for (int current = 0; current < players.Count(); current++)
                 {
                     //TODO! Test for empty deck
                     //TODO! If empty deck, test for different player amount of cards in OnTheTable
-                    BasePlayer currentPlayer = players.ToArray()[current];
+                    IBasePlayer currentPlayer = players.ToArray()[current];
                     if (!currentPlayer.Play())
                     {
                         Console.WriteLine($"player {currentPlayer} is out");
@@ -92,11 +92,13 @@ namespace ConsoleGame
         /// <param name="cardSender">The player being asked</param>
         /// <param name="cardValue">Card value asked for</param>
         /// <param name="returnResult">Collection of cards that is returned from cardSender</param>
-        public void AnnotatePlayersOfCardExchange(BasePlayer cardReciever, BasePlayer cardSender, Values cardValue, IEnumerable<Card> returnResult)
+        public void AnnotatePlayersOfCardExchange(IBasePlayer cardReciever, IBasePlayer cardSender, Values cardValue, IEnumerable<Card> returnResult)
         {
             // Tell every player that two players have asked for and handed over cards.
+            // This is just to let all players know that a card swap has happened and what
+            // cards where swapped.
             // ReturnResult is the cards that were handed over. cardValue is the value which was asked for. 
-            foreach (BasePlayer player in players)
+            foreach (IBasePlayer player in players)
             {
                 player.OtherPlayersPlayed(cardReciever, cardSender, cardValue, returnResult);
             }

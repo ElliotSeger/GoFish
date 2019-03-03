@@ -1,15 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.27703.2018
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.28621.142
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GoFish", "GoFish\GoFish.csproj", "{A9BA86EC-B8D7-42E8-99E2-0276B5231274}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardLibrary", "CardLibrary\CardLibrary.csproj", "{72BC700B-E6AC-4F64-8DA7-2823D78E5047}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerLibrary", "PlayerLibrary\PlayerLibrary.csproj", "{DB4B310E-9908-4F12-ABA5-CE4977C0A39E}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleGame", "ConsoleGame\ConsoleGame.csproj", "{781E0728-C9EF-4594-A6DF-82D209E2EC38}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7C042B60-15D8-4B5C-B06E-1E9273DAD6C8}"
 	ProjectSection(SolutionItems) = preProject
@@ -20,7 +18,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PlayerLibrary.Tests", "Play
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Interfaces", "Interfaces\Interfaces.csproj", "{9F76212C-435C-4B14-8C64-16D48BFF93AE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardLibraryTests", "CardLibraryTests\CardLibraryTests.csproj", "{E7B665FC-E261-4309-AB5F-259849D0F1D6}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{74466238-1739-42EA-8C2D-4EF15C3BDD42}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CardLibrary.Tests", "CardLibrary.Tests\CardLibrary.Tests.csproj", "{E7B665FC-E261-4309-AB5F-259849D0F1D6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GameLibrary", "GameLibrary\GameLibrary.csproj", "{781E0728-C9EF-4594-A6DF-82D209E2EC38}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -40,10 +42,6 @@ Global
 		{DB4B310E-9908-4F12-ABA5-CE4977C0A39E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DB4B310E-9908-4F12-ABA5-CE4977C0A39E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DB4B310E-9908-4F12-ABA5-CE4977C0A39E}.Release|Any CPU.Build.0 = Release|Any CPU
-		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3993C9F5-5705-4FE0-BDFD-9EA4E778FACA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3993C9F5-5705-4FE0-BDFD-9EA4E778FACA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3993C9F5-5705-4FE0-BDFD-9EA4E778FACA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -56,9 +54,17 @@ Global
 		{E7B665FC-E261-4309-AB5F-259849D0F1D6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7B665FC-E261-4309-AB5F-259849D0F1D6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E7B665FC-E261-4309-AB5F-259849D0F1D6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{781E0728-C9EF-4594-A6DF-82D209E2EC38}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{3993C9F5-5705-4FE0-BDFD-9EA4E778FACA} = {74466238-1739-42EA-8C2D-4EF15C3BDD42}
+		{E7B665FC-E261-4309-AB5F-259849D0F1D6} = {74466238-1739-42EA-8C2D-4EF15C3BDD42}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7956090E-C56C-4EDD-8BAF-0E930B93DEBE}

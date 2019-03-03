@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CardLibrary;
 using Interfaces;
@@ -20,13 +19,10 @@ namespace PlayerLibrary
         /// <param name="currentDeck">
         /// The deck that the CurrentDeck is set as.
         /// </param>
-        public Player3(CardController currentDeck) : base(currentDeck)
-        {
-            PlayerType = PlayerTypes.Computer;
-        }
+        public Player3(CardController currentDeck) : base(currentDeck) => PlayerType = PlayerTypes.Computer;
 
         //TODO! Make a strategic selection of opponent to ask for cards
-        public override BasePlayer SelectOpponent() =>
+        public override IBasePlayer SelectOpponent() =>
             // TODO! This code is experimental, needs to be rewritten
             // TODO! better way to pick an opponent
             Opponents.First();

@@ -7,8 +7,8 @@
     <ProjectGuid>{781E0728-C9EF-4594-A6DF-82D209E2EC38}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>ConsoleGame</RootNamespace>
-    <AssemblyName>ConsoleGame</AssemblyName>
+    <RootNamespace>GameLibrary</RootNamespace>
+    <AssemblyName>GameLibrary</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -40,10 +40,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ConsoleStartmenu.cs" />
-    <Compile Include="ConsoleGameController.cs" />
-    <Compile Include="ConsoleViewModel.cs" />
-    <Compile Include="Menu.cs" />
+    <Compile Include="GameController.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

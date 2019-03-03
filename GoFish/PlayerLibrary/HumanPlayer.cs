@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using CardLibrary;
 using Interfaces;
 
@@ -7,7 +6,7 @@ namespace PlayerLibrary
 {
     public class HumanPlayer : BasePlayer
     {
-        BasePlayer opponent;
+        private IBasePlayer opponent;
 
         /// <summary>
         /// Empty constructor needs to exist to be able to create an object without injecting a deck
@@ -21,12 +20,9 @@ namespace PlayerLibrary
         /// <param name="currentDeck">
         /// The deck that the CurrentDeck is set as.
         /// </param>
-        public HumanPlayer(CardController currentDeck) : base(currentDeck)
-        {
-            PlayerType = PlayerTypes.Human;
-        }
+        public HumanPlayer(CardController currentDeck) : base(currentDeck) => PlayerType = PlayerTypes.Human;
 
-        public override BasePlayer SelectOpponent()
+        public override IBasePlayer SelectOpponent()
         {
             IBasePlayer temp = SelectOpponentsCallback?.Invoke(Opponents);
             opponent = Opponents.FirstOrDefault(o => o.PlayerName == temp.PlayerName);
@@ -36,8 +32,13 @@ namespace PlayerLibrary
         public override Values SelectValueToAskFor()
         {
             if (SelectCardValueCallback != null)
+            {
                 return SelectCardValueCallback.Invoke(Hand);
-            else return Values.Noll;
+            }
+            else
+            {
+                return Values.Noll;
+            }
         }
     }
 }

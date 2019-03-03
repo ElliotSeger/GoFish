@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using CardLibrary;
 using Interfaces;
 
@@ -10,7 +8,7 @@ namespace PlayerLibrary
     /// <summary>
     /// Abstract class for standard behavior of a player
     /// </summary>
-    public abstract class BasePlayer: IBasePlayer
+    public abstract class BasePlayer : IBasePlayer
     {
         public CardExchangeAnnouncement CardExchangeAnnouncement { get; set; }
         public Dictionary<string, List<Card>> SwappedCards { get; set; } = new Dictionary<string, List<Card>>();
@@ -18,6 +16,7 @@ namespace PlayerLibrary
 
         // This property is in the interface IBasePlayer to be possible to interchange names with the viewmodel
         public string PlayerName => GetType().Name;
+
         public PlayerTypes PlayerType { get; protected set; }
 
         /// <summary>
@@ -51,7 +50,7 @@ namespace PlayerLibrary
         /// <summary>
         /// The players opponents. To know who the player could ask for cards
         /// </summary>
-        public IEnumerable<BasePlayer> Opponents { get; set; }
+        public IEnumerable<IBasePlayer> Opponents { get; set; }
 
         // Callbacks to the viewmodel to interact with console/wpf etc
         public SelectOpponentDelegate SelectOpponentsCallback { get; set; }
@@ -75,7 +74,7 @@ namespace PlayerLibrary
 
         //Abstractions for things that should be strategic different for each player
         //Selection of an opponent and selection of a card value to ask for
-        public abstract BasePlayer SelectOpponent();
+        public abstract IBasePlayer SelectOpponent();
         public abstract Values SelectValueToAskFor();
 
         /// <summary>
@@ -88,7 +87,7 @@ namespace PlayerLibrary
         public bool Play()
         {
             //Strategic selection of opponent
-            BasePlayer opponent = SelectOpponent();
+            IBasePlayer opponent = SelectOpponent();
             //Strategic selection of card value
             Values valueToAskFor = SelectValueToAskFor();
 
@@ -153,7 +152,7 @@ namespace PlayerLibrary
         /// <param name="cardSender"></param>
         /// <param name="cardValue"></param>
         /// <param name="cardsReceived"></param>
-        public void OtherPlayersPlayed(BasePlayer cardReciever, BasePlayer cardSender, Values cardValue, IEnumerable<Card> cardsReceived)
+        public void OtherPlayersPlayed(IBasePlayer cardReciever, IBasePlayer cardSender, Values cardValue, IEnumerable<Card> cardsReceived)
         {
             // Take care of the hands for the two players
             UpdateHands(cardReciever, cardSender, cardsReceived);
@@ -162,7 +161,7 @@ namespace PlayerLibrary
             UpdateSwappedCardsDictionary(cardReciever.PlayerName, cardSender.PlayerName, cardsReceived);
         }
 
-        private void UpdateHands(BasePlayer cardReciever, BasePlayer cardSender, IEnumerable<Card> cardsReceived)
+        private void UpdateHands(IBasePlayer cardReciever, IBasePlayer cardSender, IEnumerable<Card> cardsReceived)
         {
             // Take care of the hand if this is the requesting player
             if (cardReciever == this)
@@ -175,7 +174,7 @@ namespace PlayerLibrary
             {
                 HandleSender(cardsReceived);
             }
-            Thread.Sleep(2000);
+            //Thread.Sleep(2000);
         }
 
         private void HandleSender(IEnumerable<Card> cardsReceived)
@@ -202,6 +201,7 @@ namespace PlayerLibrary
 
         private void HandleReciever(IEnumerable<Card> cardsReceived)
         {
+            //TODO! cardsRecieved could be null at the end
             Hand.AddRange(cardsReceived);
 
             // Sort the hand based on the Value

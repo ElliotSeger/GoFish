@@ -1,12 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace ConsoleGame
 {
-    static class Menu
+    internal static class Menu
     {
         public struct Option
         {
@@ -30,17 +27,9 @@ namespace ConsoleGame
             }
         }
 
-        public static void Exit()
-        {
-            Environment.Exit(0);
-        }
+        public static void Exit() => Environment.Exit(0);
 
-        static void Main(string[] args)
-        {
-            Console.CursorVisible = false;
-
-
-        }
+        private static void MainMenu(string[] args) => Console.CursorVisible = false;
 
         public static Action GetAction(Option[] options)
         {

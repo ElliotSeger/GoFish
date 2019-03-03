@@ -1,20 +1,22 @@
-﻿using ConsoleGame;
+﻿using CardLibrary;
+using ConsoleGame;
+using GameLibrary;
 using Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Xml;
+using PlayerLibrary;
 
 namespace GoFish
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        private static void Main(string[] args)
         {
-            IGenericViewModel vm = new ConsoleViewModel();
-            ConsoleGameController game = new ConsoleGameController(vm);
+            // The objects that are represented by interfaces are object that are platform dependent
+
+            IGenericViewModel viewModel = new ConsoleViewModel();
+            CardController cardController = new CardController();
+            PlayerController playerController = new PlayerController(viewModel);
+            IStartMenu startMenu = new ConsoleStartmenu(playerController, viewModel);
+            GameController game = new GameController(startMenu, viewModel, cardController, playerController);
             game.Run();
         }
     }
