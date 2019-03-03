@@ -10,10 +10,9 @@ namespace PlayerLibrary
     /// </summary>
     public abstract class BasePlayer : IBasePlayer
     {
-        public CardExchangeAnnouncement CardExchangeAnnouncement { get; set; }
         public Dictionary<string, List<Card>> SwappedCards { get; set; } = new Dictionary<string, List<Card>>();
         public List<Card> OnTheTable { get; set; } = new List<Card>();
-
+        public int CardsLeftOnHand { get { return Hand.Count; } }
         // This property is in the interface IBasePlayer to be possible to interchange names with the viewmodel
         public string PlayerName => GetType().Name;
 
@@ -56,6 +55,10 @@ namespace PlayerLibrary
         public SelectOpponentDelegate SelectOpponentsCallback { get; set; }
         public SelectCardValueDelegate SelectCardValueCallback { get; set; }
         public ShowMessageDelegate ShowMessageCallback { get; set; }
+
+        // Callback to announce card exchange between players
+        public CardExchangeAnnouncementDelegate CardExchangeAnnouncementCallback { get; set; }
+
         /// <summary>
         /// Empty constructor needs to exist to be able to create an object without injecting a deck
         /// </summary>
@@ -102,7 +105,7 @@ namespace PlayerLibrary
             //second parameter the sender, 
             //third parameter the card value exchanged 
             //and the fourth parameter is which cards actually got handed over from sender to reciever
-            CardExchangeAnnouncement?.Invoke(this, opponent, valueToAskFor, recieved);
+            CardExchangeAnnouncementCallback?.Invoke(this, opponent, valueToAskFor, recieved);
 
             // Test to see if any cards was recieved
             if (recieved.Count() == 0)
@@ -111,7 +114,7 @@ namespace PlayerLibrary
                 if (CurrentDeck.CardsLeft == 0)
                 {
                     // No cards left in the deck, you're out!
-                    return false;
+                    return true;
                 }
                 Hand.Add(CurrentDeck.PullOne());
                 // Sorting the hand based on cards Value.
@@ -136,10 +139,10 @@ namespace PlayerLibrary
         {
             // Linq where is used to find any card that is equal to value, it's a simplified if.
             // card => card.Value == value is known as lambda expression.
-            if (Hand.Count == 0)
-            {
-                return null;
-            }
+            //if (Hand.Count == 0)
+            //{
+            //    return null;
+            //}
             IEnumerable<Card> matchingCards = Hand.Where(c => c.Value == value);
             // Convert the IEnumerable to an array, just to detach the cards in it from the Hand
             // Otherwise it's not possible to do the remove part in OtherPlayersPlayed
@@ -268,36 +271,35 @@ namespace PlayerLibrary
 
         private void UpdateSwappedCardsDictionary(string recieverName, string senderName, IEnumerable<Card> cardsReceived)
         {
-            // First make sure the recieverName exists in the dictionary
-            if (SwappedCards.ContainsKey(recieverName) == false)
-            {
-                // Create a list for known cards for recieverName
-                SwappedCards.Add(recieverName, new List<Card>());
-            }
-
-            // Then make sure the senderName exists in the dictionary
-            if (SwappedCards.ContainsKey(senderName) == false)
-            {
-                // Create a list for known cards for senderName
-                SwappedCards.Add(senderName, new List<Card>());
-            }
-
-            // Assign the known cards to recieverName
             if (cardsReceived != null)
             {
-                SwappedCards[recieverName].AddRange(cardsReceived);
-            }
-
-            // Remove the known cards for senderName
-            foreach (Card card in cardsReceived)
-            {
-                Card remove = SwappedCards[senderName].Where(c => c.Suit == card.Suit && c.Value == card.Value).FirstOrDefault();
-                if (remove != null)
+                // First make sure the recieverName exists in the dictionary
+                if (SwappedCards.ContainsKey(recieverName) == false)
                 {
-                    SwappedCards[senderName].Remove(remove);
+                    // Create a list for known cards for recieverName
+                    SwappedCards.Add(recieverName, new List<Card>());
+                }
+
+                // Then make sure the senderName exists in the dictionary
+                if (SwappedCards.ContainsKey(senderName) == false)
+                {
+                    // Create a list for known cards for senderName
+                    SwappedCards.Add(senderName, new List<Card>());
+                }
+
+                // Assign the known cards to recieverName
+                SwappedCards[recieverName].AddRange(cardsReceived);
+
+                // Remove the known cards for senderName
+                foreach (Card card in cardsReceived)
+                {
+                    Card remove = SwappedCards[senderName].Where(c => c.Suit == card.Suit && c.Value == card.Value).FirstOrDefault();
+                    if (remove != null)
+                    {
+                        SwappedCards[senderName].Remove(remove);
+                    }
                 }
             }
         }
-
     }
 }

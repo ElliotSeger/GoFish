@@ -42,7 +42,7 @@ namespace GameLibrary
                 // Make sure each player gets aware of the opponents
                 player.Opponents = players.Where(p => p.PlayerName != player.PlayerName);
                 // Attach a callback delegate to each player to enable callback when cardswapping happens
-                player.CardExchangeAnnouncement += AnnotatePlayersOfCardExchange;
+                player.CardExchangeAnnouncementCallback += AnnotatePlayersOfCardExchange;
             }
 
 
@@ -51,23 +51,35 @@ namespace GameLibrary
             {
                 for (int current = 0; current < players.Count(); current++)
                 {
-                    //TODO! Test for empty deck
-                    //TODO! If empty deck, test for different player amount of cards in OnTheTable
                     IBasePlayer currentPlayer = players.ToArray()[current];
-                    if (!currentPlayer.Play())
+
+                    // If player has 0 cards on hand and deck has 0 cards left then skip to next player
+                    // continue will continue with next value of the for loop
+                    if (currentPlayer.CardsLeftOnHand == 0 && currentPlayer.CurrentDeck.CardsLeft == 0)
+                        continue;
+
+                    currentPlayer.Play();
+                }
+
+                if (AllPlayersOutOfCards(players))
+                {
+                    winner = players.OrderByDescending(p => p.OnTheTable.Count).First();
+                    Console.WriteLine($"Winner is: {winner.PlayerName}");
+                    Console.WriteLine($"OnTheHand: {winner.CardsLeftOnHand} cards");
+                    Console.WriteLine($"OnTheTable: {winner.OnTheTable.Count} cards");
+
+                    foreach (var player in players.OrderByDescending(p=>p.OnTheTable.Count))
                     {
-                        Console.WriteLine($"player {currentPlayer} is out");
-                        players = players.Where(p => p.GetType().Name != currentPlayer.GetType().Name);
-                        current--;
-                    }
-                    if (players.Count() == 1)
-                    {
-                        winner = players.ToArray()[0];
-                        break;
+                        Console.WriteLine($"Player: {player.PlayerName}, {player.OnTheTable.Count} on the table, {player.CardsLeftOnHand} on the hand.");
                     }
                 }
             }
-            Console.WriteLine($"Winner is {winner}");
+        }
+
+        private bool AllPlayersOutOfCards(IEnumerable<IBasePlayer> players)
+        {
+            // Compare count of all players with more than 0 cards on hand with 0
+            return players.Where(p => p.CardsLeftOnHand > 0).Count() == 0;
         }
 
         /// <summary>
